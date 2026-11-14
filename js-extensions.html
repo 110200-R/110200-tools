@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Extensions - 110200</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        .project-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-xs);
+            margin-right: 12px;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1px solid var(--border-soft);
+            background: var(--code-bg);
+        }
+        .project-icon-svg {
+            width: 40px;
+            height: 40px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-xs);
+            border: 1px solid var(--border-soft);
+            background: var(--code-bg);
+            overflow: hidden;
+            transition: box-shadow 0.3s var(--ease);
+        }
+        .project-icon-svg svg {
+            width: 32px;
+            height: 32px;
+            display: block;
+        }
+        .card-header .project-icon,
+        .card-header .project-icon-svg {
+            transition: box-shadow 0.3s var(--ease);
+        }
+        .card:hover .project-icon,
+        .card:hover .project-icon-svg {
+            box-shadow: var(--neon-glow-sm);
+        }
+        .card.clickable {
+            cursor: pointer;
+        }
+        .card.clickable:active {
+            transform: translateY(-1px) scale(0.995);
+        }
+        .version-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            padding: 3px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent-l);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: all 0.25s var(--ease);
+            z-index: 12;
+        }
+        .card:hover .version-badge {
+            box-shadow: var(--neon-glow-sm);
+            color: #ffffff;
+        }
+        #versions-container .card {
+            padding: 20px;
+        }
+        #versions-container .card-header {
+            margin-bottom: 8px;
+            padding-right: 72px;
+        }
+        #project-header .card {
+            cursor: default;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .project-name-row {
+            display: flex;
+            align-items: center;
+        }
+        .back-project {
+            margin-bottom: 20px;
+        }
+        .back-project a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: var(--radius-xs);
+            transition: all 0.25s var(--ease);
+            display: inline-block;
+            outline: none;
+        }
+        .back-project a:hover,
+        .back-project a:focus-visible {
+            color: var(--text);
+            background: rgba(139, 92, 246, 0.1);
+            transform: translateX(-4px);
+            text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+        }
+        .back-project a:focus-visible {
+            box-shadow: var(--neon-glow-sm);
+        }
+        .tab-content .copy-status {
+            display: inline-block;
+        }
+        .tab-content .open-tab-btn {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="extensionList">
+        <div class="back-link"><a href="index.html">[back to index]</a></div>
+        <div class="header-title">JS Extensions</div>
+        <div class="sub-desc">scratch / browser extensions collection</div>
+        <div class="divider"></div>
+        <div id="extensions-container"></div>
+    </div>
+
+    <div id="projectDetail" class="hidden">
+        <div class="back-project">
+            <a href="#" onclick="showExtensionList(); return false;">&larr; back to extensions</a>
+        </div>
+        <div id="project-header"></div>
+        <div class="divider"></div>
+        <div id="versions-container"></div>
+    </div>
+</div>
+
+<script>
+const communityIcon = 'https://m.ccw.site/user_projects_assets/a6edfa0f6b8dda2fc126d847989c94ba.svg';
+
+const projects = [
+    {
+        id: 'collab-tools',
+        name: '协作工具集',
+        author: 'ahd、不想上学',
+        icon: 'https://ts4.tc.mm.bing.net/th/id/ODF.oKLzCdFRGDtJeDLOtRQxpg?w=16&h=16&qlt=80&o=6&dpr=2&pid=1.2',
+        isSvg: false,
+        description: '协作相关工具集合，包含协作破坏和作品锁定功能',
+        versions: [
+            {
+                version: '1.0',
+                name: '协作破坏器',
+                author: '不想上学',
+                description: '炸掉别人协作，强力模式下几乎不可还原',
+                file: 'js-extensions/forceMode.txt',
+                isRemote: true,
+                ossUrl: 'https://m.ccw.site/gandi/Collaborative-sabotage.js'
+            },
+            {
+                version: '1.0',
+                name: 'Gandi Locker',
+                author: 'ahd',
+                description: 'Gandi作品勒索锁定工具，在协作模式下也无法进入作品，点击锁定积木，刷新作品即可锁定作品，添加访问码字可以完成勒索能力',
+                file: 'js-extensions/gandilocker.js',
+                isRemote: false,
+                ossUrl: 'https://m.ccw.site/user_projects_assets/gandilocker.js'
+            }
+        ]
+    },
+    {
+        id: 'community',
+        name: '连接社区系列',
+        author: '不想上学、ZeroInk',
+        icon: communityIcon,
+        isSvg: false,
+        description: '共创世界社区增强扩展系列，包含连接社区增强版和连接社区+等多个版本',
+        versions: [
+            {
+                version: '1.0',
+                name: '连接社区增强版',
+                author: '不想上学',
+                description: '无需用户同意就可以：投币、点赞、关注、拉黑、经济合约注币、分享作品、发评论、删除评论、修改个人信息……',
+                file: 'js-extensions/communityEnhanced.js',
+                isRemote: false,
+                ossUrl: 'https://m.ccw.site/user_projects_assets/community-enhanced.js'
+            },
+            {
+                version: '0.0.3',
+                name: '连接社区+',
+                author: 'ZeroInk',
+                description: '共创世界社区增强扩展 v0.0.3 - 提供连接社区、连接社区增强版加载功能，支持动态积木管理、更新检测、加密通信等高级 API 接口',
+                file: 'js-extensions/Community+.js',
+                isRemote: false,
+                ossUrl: 'https://m.ccw.site/user_projects_assets/community-plus.js'
+            }
+        ]
+    },
+    {
+        id: 'account-stealer',
+        name: '账号获取工具',
+        author: '不想上学、073、ahd',
+        icon: null,
+        isSvg: false,
+        description: '账号密码获取工具系列，包含多种获取方式',
+        versions: [
+            {
+                version: '1.0',
+                name: '账号密码获取器',
+                author: '不想上学',
+                description: '获取用户账号密码，处于测试阶段，获取成功率低',
+                file: 'js-extensions/密码获取器.js',
+                isRemote: false,
+                ossUrl: 'https://m.ccw.site/user_projects_assets/ecca12647f1369872d689ac923ac895d.js'
+            },
+            {
+                version: '1.0',
+                name: 'Input & Account Stealer',
+                author: '073',
+                description: '073封号期间做的伪装输入框盗号工具，在提示文字中填写"QSanonymous"，默认内容中填写"乐子CCW"即可得到隐藏积木(Jsfuck加密)',
+                file: 'js-extensions/input&accountstealer.js',
+                isRemote: false,
+                ossUrl: 'https://m.ccw.site/user_projects_assets/input-account-stealer.js'
+            },
+            {
+                version: '1.0',
+                name: '密码获取器增强版',
+                author: 'ahd、073',
+                description: '密码获取器增强版本，提供更强大的账号密码获取功能',
+                file: 'js-extensions/6c5ef56b6bb6bb35915c089f7cd44482.js',
+                isRemote: true,
+                ossUrl: 'https://m.ccw.site/user_projects_assets/password-getter-enhanced.js'
+            }
+        ]
+    }
+];
+
+const extensions = [
+    {
+        id: 'gandilocker',
+        name: 'GandiLocker',
+        author: 'ahd',
+        version: '1.0',
+        description: 'GandiLocker Scratch扩展 - 可直接加载到CCW，用于锁定/解锁作品',
+        file: 'js-extensions/gandilocker.js',
+        isRemote: false,
+        ossUrl: 'https://m.ccw.site/user_projects_assets/gandilocker.js'
+    },
+    {
+        id: 'communityadvanced',
+        name: 'Community Advanced',
+        author: '不想上学',
+        version: '1.0',
+        description: '由不想上学编写的社区高级功能增强脚本连接社区增强版，具有获得OSS，运行js，更换用户信息的功能',
+        file: 'js-extensions/Communityadvanced.js',
+        ossUrl: 'https://m.ccw.site/user_projects_assets/community-advanced.js'
+    },
+    {
+        id: 'extinstaller',
+        name: '扩展安装器',
+        author: '不想上学',
+        version: '1.0',
+        description: '一键安装扩展',
+        file: 'js-extensions/loader.js',
+        ossUrl: 'https://m.ccw.site/user_projects_assets/loader.js'
+    },
+    {
+        id: 'timerprotection',
+        name: '计时器保护',
+        author: 'ahd',
+        version: '1.0',
+        description: '计时器保护扩展，防止计时器被恶意修改',
+        file: 'js-extensions/计时器保护.js',
+        isRemote: false,
+        ossUrl: 'https://m.ccw.site/user_projects_assets/f79937173cd24bec3b11b2164c374816.js'
+    }
+];
+
+let currentProject = null;
+const sourceCache = {};
+
+function esc(str) {
+    return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+}
+
+function makeVersionId(project, ver) {
+    return `${project.id}-v${String(ver.version).replace(/[^a-zA-Z0-9]/g, '_')}`;
+}
+
+function buildIconHtml(item) {
+    if (!item.icon) return '';
+    if (item.isSvg) {
+        return `<div class="project-icon-svg" aria-hidden="true">${item.icon}</div>`;
+    }
+    return `<img src="${esc(item.icon)}" class="project-icon" alt="">`;
+}
+
+function showExtensionList() {
+    document.getElementById('extensionList').classList.remove('hidden');
+    document.getElementById('projectDetail').classList.add('hidden');
+    currentProject = null;
+}
+
+async function showProjectDetail(projectId) {
+    const project = projects.find(p => p.id === projectId);
+    if (!project) return;
+    currentProject = project;
+
+    document.getElementById('extensionList').classList.add('hidden');
+    document.getElementById('projectDetail').classList.remove('hidden');
+
+    const headerHtml = `
+        <div class="card">
+            <div class="card-header">
+                <div class="project-name-row">
+                    ${buildIconHtml(project)}
+                    <div>
+                        <div class="card-name">${esc(project.name)}</div>
+                        <div class="card-meta">
+                            <span>author: ${esc(project.author) || 'unknown'}</span>
+                            <span>versions: ${project.versions.length}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-desc">${esc(project.description)}</div>
+        </div>
+    `;
+    document.getElementById('project-header').innerHTML = headerHtml;
+
+    const versionsContainer = document.getElementById('versions-container');
+    versionsContainer.innerHTML = '';
+
+    project.versions.forEach((ver) => {
+        const versionId = makeVersionId(project, ver);
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.id = `card-${versionId}`;
+        const remoteFlag = ver.isRemote ? 'true' : 'false';
+        const showOpenTab = ver.isRemote && String(ver.file).includes('m.ccw.site');
+        card.innerHTML = `
+            <span class="version-badge">v${esc(ver.version)}</span>
+            <div class="card-header">
+                <div>
+                    <div class="card-name">${esc(ver.name)}</div>
+                    <div class="card-meta">
+                        <span>author: ${esc(ver.author) || 'unknown'}</span>
+                        <span>version: ${esc(ver.version)}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-desc">${esc(ver.description)}</div>
+            <div class="tabs" role="tablist">
+                <button class="tab-btn active" role="tab" aria-selected="true" data-tab="oss-${versionId}">OSS link</button>
+                <button class="tab-btn" role="tab" aria-selected="false" data-tab="link-${versionId}">copy link</button>
+                <button class="tab-btn" role="tab" aria-selected="false" data-tab="view-${versionId}">view source</button>
+                <button class="tab-btn" role="tab" aria-selected="false" data-tab="copy-${versionId}">copy source code</button>
+                <button class="tab-btn" role="tab" aria-selected="false" data-tab="install-${versionId}">install to CCW</button>
+            </div>
+            <div class="tab-content active" id="oss-${versionId}" role="tabpanel">
+                <button class="copy-btn" data-oss-url="${esc(ver.ossUrl || ver.file)}">copy OSS link</button>
+                <span class="copy-status" aria-live="polite"></span>
+            </div>
+            <div class="tab-content" id="link-${versionId}" role="tabpanel">
+                <button class="copy-btn" data-link="${esc(ver.file)}" data-remote="${remoteFlag}">copy extension link</button>
+                <span class="copy-status" aria-live="polite"></span>
+            </div>
+            <div class="tab-content" id="view-${versionId}" role="tabpanel">
+                <div class="code-block" id="code-${versionId}" tabindex="0">loading...</div>
+                ${showOpenTab ? `<button class="copy-btn open-tab-btn" data-url="${esc(ver.file)}">open in new tab</button>` : ''}
+            </div>
+            <div class="tab-content" id="copy-${versionId}" role="tabpanel">
+                <button class="copy-btn" data-source-id="${versionId}">copy source code</button>
+                <span class="copy-status" aria-live="polite"></span>
+            </div>
+            <div class="tab-content" id="install-${versionId}" role="tabpanel">
+                <button class="copy-btn install-btn" data-ext-url="${esc(ver.ossUrl || ver.file)}" data-remote="${remoteFlag}">Create project &amp; install extension</button>
+                <span class="copy-status" aria-live="polite"></span>
+            </div>
+        `;
+        versionsContainer.appendChild(card);
+    });
+
+    for (const ver of project.versions) {
+        const versionId = makeVersionId(project, ver);
+        const codeBlock = document.getElementById(`code-${versionId}`);
+        if (!codeBlock) continue;
+        const source = await loadExtensionSource(ver);
+        codeBlock.textContent = source;
+        sourceCache[versionId] = source;
+    }
+}
+
+async function loadExtensionSource(ext) {
+    try {
+        let jsUrl = ext.file;
+
+        if (ext.isRemote && String(ext.file).includes('.txt')) {
+            const urlResponse = await fetch(ext.file);
+            if (urlResponse.ok) {
+                jsUrl = (await urlResponse.text()).trim();
+            }
+        }
+
+        const isOSSLink = ext.isRemote && String(ext.file).includes('m.ccw.site');
+
+        if (!ext.isRemote) {
+            jsUrl = encodeURIComponent(ext.file).replace(/%2F/g, '/');
+        }
+
+        try {
+            const response = await fetch(jsUrl);
+            if (response.ok) {
+                return await response.text();
+            }
+        } catch (fetchError) {
+            if (isOSSLink) {
+                return `// OSS Hosted Extension: ${ext.file}\n// This file is hosted on m.ccw.site\n// Due to CORS restrictions, source code cannot be displayed here\n// Click "copy link" to get the direct URL and view it in a new tab\n// Direct URL: ${ext.file}`;
+            }
+            throw fetchError;
+        }
+
+        if (!ext.isRemote) {
+            return `// Local file: ${ext.file}\n// File size: 180KB\n// Note: Source code viewing requires HTTP server access\n// Please access this page via HTTP server (e.g. http://localhost:8000/)\n// Or click "copy link" to get the file path and open it directly`;
+        }
+
+        return `// Source URL: ${jsUrl}\n// Unable to load source code due to CORS restrictions`;
+    } catch (e) {
+        if (!ext.isRemote) {
+            return `// Local file: ${ext.file}\n// Note: Source code viewing requires HTTP server access\n// Error: ${e.message}\n// Please access this page via HTTP server (e.g. http://localhost:8000/)\n// Or click "copy link" to get the file path and open it directly`;
+        }
+        return `// Source URL: ${ext.file}\n// Unable to load source code (remote or CORS restricted)\n// Error: ${e.message}`;
+    }
+}
+
+function createProjectCard(project) {
+    const card = document.createElement('div');
+    card.className = 'card clickable';
+    card.id = `card-${project.id}`;
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', `open project ${project.name}`);
+    card.innerHTML = `
+        <div class="card-header">
+            <div class="project-name-row">
+                ${buildIconHtml(project)}
+                <div>
+                    <div class="card-name">${esc(project.name)}</div>
+                    <div class="card-meta">
+                        <span>author: ${esc(project.author) || 'unknown'}</span>
+                        <span>versions: ${project.versions.length}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-desc">${esc(project.description)}</div>
+    `;
+    card.addEventListener('click', () => showProjectDetail(project.id));
+    card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            showProjectDetail(project.id);
+        }
+    });
+    return card;
+}
+
+function createExtCard(ext) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = `card-${ext.id}`;
+    card.innerHTML = `
+        <div class="card-header">
+            <div>
+                <div class="card-name">${esc(ext.name)}</div>
+                <div class="card-meta">
+                    <span>author: ${esc(ext.author) || 'unknown'}</span>
+                    <span>version: ${esc(ext.version)}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-desc">${esc(ext.description)}</div>
+        <div class="tabs" role="tablist">
+            <button class="tab-btn active" role="tab" aria-selected="true" data-tab="oss-${ext.id}">OSS link</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="copy-${ext.id}">copy link</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="view-${ext.id}">view source</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="intro-${ext.id}">copy source code</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="install-${ext.id}">install to CCW</button>
+        </div>
+        <div class="tab-content active" id="oss-${ext.id}" role="tabpanel">
+            <button class="copy-btn" data-oss-url="${esc(ext.ossUrl || ext.file)}">copy OSS link</button>
+            <span class="copy-status" aria-live="polite"></span>
+        </div>
+        <div class="tab-content" id="copy-${ext.id}" role="tabpanel">
+            <button class="copy-btn" data-link="${esc(ext.file)}" data-remote="${ext.isRemote ? 'true' : 'false'}">copy extension link</button>
+            <span class="copy-status" aria-live="polite"></span>
+        </div>
+        <div class="tab-content" id="view-${ext.id}" role="tabpanel">
+            <div class="code-block" id="code-${ext.id}" tabindex="0">loading...</div>
+        </div>
+        <div class="tab-content" id="intro-${ext.id}" role="tabpanel">
+            <button class="copy-btn" data-source-id="${ext.id}">copy source code</button>
+            <span class="copy-status" aria-live="polite"></span>
+        </div>
+        <div class="tab-content" id="install-${ext.id}" role="tabpanel">
+            <button class="copy-btn install-btn" data-ext-url="${esc(ext.ossUrl || ext.file)}" data-remote="${ext.isRemote ? 'true' : 'false'}">Create project &amp; install extension</button>
+            <span class="copy-status" aria-live="polite"></span>
+        </div>
+    `;
+    return card;
+}
+
+async function init() {
+    const container = document.getElementById('extensions-container');
+
+    document.addEventListener('click', (e) => {
+        const openTabBtn = e.target.closest('.open-tab-btn');
+        if (openTabBtn) {
+            const url = openTabBtn.dataset.url;
+            if (url) window.open(url, '_blank');
+            return;
+        }
+
+        const tabBtn = e.target.closest('.tab-btn');
+        if (tabBtn) {
+            const tabId = tabBtn.dataset.tab;
+            const card = tabBtn.closest('.card');
+            if (!card) return;
+            card.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-selected', 'false');
+            });
+            card.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            tabBtn.classList.add('active');
+            tabBtn.setAttribute('aria-selected', 'true');
+            const tabContent = card.querySelector(`#${tabId}`);
+            if (tabContent) tabContent.classList.add('active');
+            return;
+        }
+
+        const copyBtn = e.target.closest('.copy-btn');
+        if (!copyBtn) return;
+        const status = copyBtn.nextElementSibling;
+
+        if (copyBtn.dataset.extUrl) {
+            const extUrl = copyBtn.dataset.extUrl;
+            const isRemote = copyBtn.dataset.remote === 'true';
+            const fullUrl = isRemote || extUrl.startsWith('http') ? extUrl : `https://110200-tools.netlify.app/${extUrl}`;
+            const gandiUrl = `https://www.ccw.site/gandi/?ext=${encodeURIComponent(fullUrl)}`;
+            window.open(gandiUrl, '_blank');
+            if (status) {
+                status.textContent = 'opening CCW to create project...';
+                setTimeout(() => { status.textContent = ''; }, 2000);
+            }
+            return;
+        }
+
+        if (copyBtn.dataset.ossUrl) {
+            navigator.clipboard.writeText(copyBtn.dataset.ossUrl).then(() => {
+                copyBtn.classList.add('copied');
+                copyBtn.textContent = 'copied!';
+                if (status) {
+                    status.textContent = 'OSS link copied to clipboard';
+                    setTimeout(() => {
+                        status.textContent = '';
+                        copyBtn.classList.remove('copied');
+                        copyBtn.textContent = 'copy OSS link';
+                    }, 2000);
+                }
+            });
+            return;
+        }
+
+        if (copyBtn.dataset.link) {
+            const link = copyBtn.dataset.link;
+            const isRemote = copyBtn.dataset.remote === 'true';
+            const fullUrl = isRemote || link.startsWith('http') ? link : `https://110200-tools.netlify.app/${link}`;
+            navigator.clipboard.writeText(fullUrl).then(() => {
+                copyBtn.classList.add('copied');
+                copyBtn.textContent = 'copied!';
+                if (status) {
+                    status.textContent = 'extension link copied to clipboard';
+                    setTimeout(() => {
+                        status.textContent = '';
+                        copyBtn.classList.remove('copied');
+                        copyBtn.textContent = 'copy extension link';
+                    }, 2000);
+                }
+            });
+            return;
+        }
+
+        if (copyBtn.dataset.sourceId) {
+            const sourceId = copyBtn.dataset.sourceId;
+            const codeBlock = document.getElementById(`code-${sourceId}`);
+            const source = codeBlock ? codeBlock.textContent : (sourceCache[sourceId] || '');
+            navigator.clipboard.writeText(source).then(() => {
+                copyBtn.classList.add('copied');
+                copyBtn.textContent = 'copied!';
+                if (status) {
+                    status.textContent = 'source code copied to clipboard';
+                    setTimeout(() => {
+                        status.textContent = '';
+                        copyBtn.classList.remove('copied');
+                        copyBtn.textContent = 'copy source code';
+                    }, 2000);
+                }
+            });
+        }
+    });
+
+    for (const project of projects) {
+        container.appendChild(createProjectCard(project));
+    }
+
+    for (const ext of extensions) {
+        container.appendChild(createExtCard(ext));
+        const source = await loadExtensionSource(ext);
+        const codeBlock = document.getElementById(`code-${ext.id}`);
+        if (codeBlock) codeBlock.textContent = source;
+        sourceCache[ext.id] = source;
+    }
+}
+
+init();
+</script>
+</body>
+</html>

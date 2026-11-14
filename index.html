@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>110200-tools</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="https://m.ccw.site/gandi_application/RL.png">
+    <link rel="shortcut icon" type="image/png" href="https://m.ccw.site/gandi_application/RL.png">
+    <link rel="apple-touch-icon" href="https://m.ccw.site/gandi_application/RL.png">
+    <style>
+        .intro-section {
+            margin-bottom: 24px;
+        }
+        .intro-section h1 {
+            font-size: 28px;
+            margin-bottom: 12px;
+            color: var(--text);
+            transition: filter 0.3s ease;
+        }
+        .intro-section h1:hover {
+            filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.6));
+        }
+        .intro-section p {
+            font-size: 16px;
+            color: var(--text);
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        .intro-section a {
+            color: var(--accent-l);
+            text-decoration: none;
+            transition: all 0.25s var(--ease);
+            padding: 2px 4px;
+            border-radius: 4px;
+            outline: none;
+        }
+        .intro-section a:hover,
+        .intro-section a:focus-visible {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+            background: rgba(139, 92, 246, 0.1);
+        }
+        .intro-section a:focus-visible {
+            box-shadow: var(--neon-glow-sm);
+        }
+        .intro-section h2 {
+            font-size: 20px;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            color: var(--text);
+            transition: text-shadow 0.3s;
+        }
+        .intro-section h2:hover {
+            text-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+        }
+        .intro-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .intro-section ul li {
+            font-size: 15px;
+            color: var(--text);
+            margin-bottom: 8px;
+            line-height: 1.6;
+            padding: 6px 12px;
+            border-radius: var(--radius-xs);
+            border-left: 3px solid transparent;
+            transition: all 0.25s var(--ease);
+            outline: none;
+        }
+        .intro-section ul li:hover,
+        .intro-section ul li:focus-visible,
+        .intro-section ul li:focus-within {
+            background: rgba(139, 92, 246, 0.08);
+            border-left-color: var(--accent);
+            transform: translateX(6px);
+            color: var(--text);
+        }
+        .intro-section ul li a {
+            color: var(--accent-l);
+            text-decoration: none;
+            transition: all 0.25s var(--ease);
+            outline: none;
+        }
+        .intro-section ul li a:hover,
+        .intro-section ul li a:focus-visible {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+        }
+        .intro-section ul li a:focus-visible {
+            box-shadow: var(--neon-glow-sm);
+            border-radius: 4px;
+        }
+        .category-title {
+            font-size: 20px;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            color: var(--text);
+            transition: text-shadow 0.3s;
+        }
+        .category-title:hover {
+            text-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+        }
+        .card.clickable {
+            cursor: pointer;
+        }
+        .card.clickable:active {
+            transform: translateY(-1px) scale(0.995);
+        }
+        .card-open-link {
+            color: var(--accent-l);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 6px 14px;
+            border-radius: var(--radius-xs);
+            display: inline-block;
+            transition: all 0.25s var(--ease);
+            outline: none;
+            border: 1px solid transparent;
+        }
+        .card-open-link:hover,
+        .card-open-link:focus-visible {
+            color: #ffffff;
+            background: rgba(139, 92, 246, 0.15);
+            border-color: var(--border);
+            text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+            transform: scale(1.04);
+        }
+        .card-open-link:focus-visible {
+            box-shadow: var(--neon-glow-sm);
+        }
+        .card-open-link:active {
+            transform: scale(0.95);
+        }
+        .external-links {
+            margin-top: 48px;
+            padding: 24px 0 16px;
+            border-top: 1px solid rgba(139, 92, 246, 0.2);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            align-items: center;
+            justify-content: center;
+        }
+        .external-links a {
+            color: var(--accent-l);
+            text-decoration: none;
+            font-size: 15px;
+            padding: 8px 18px;
+            border-radius: var(--radius-xs);
+            transition: all 0.25s var(--ease);
+            outline: none;
+            border: 1px solid transparent;
+            background: rgba(139, 92, 246, 0.05);
+            letter-spacing: 0.3px;
+        }
+        .external-links a:hover,
+        .external-links a:focus-visible {
+            color: #ffffff;
+            background: rgba(139, 92, 246, 0.15);
+            border-color: var(--border);
+            text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+            transform: scale(1.04);
+            box-shadow: var(--neon-glow-sm);
+        }
+        .external-links a:active {
+            transform: scale(0.96);
+        }
+        .external-links .label {
+            color: var(--text);
+            font-size: 14px;
+            opacity: 0.8;
+            margin-right: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="intro-section">
+        <h1>110200-tools</h1>
+        <p>110200的工具库</p>
+
+        <h2>说明</h2>
+        <ul>
+            <li>Scratch扩展和Gandi扩展部分用了加固，可以直接解固</li>
+            <li>使用该网站上面的工具则证明你不用于任何非法目的，违者后果自负</li>
+            <li>使用该网站的工具与扩展，建议退出登录后再进行使用，否则可能会被管理员处以999天的封禁</li>
+        </ul>
+
+        <h2>关于QQ的技术交流群</h2>
+        <ul>
+            <li><a href="https://qm.qq.com/q/Kegi839gwk" target="_blank" rel="noopener">110200的技术交流群：1013542258</a></li>
+            <li><a href="https://qm.qq.com/q/zi5BsPFASQ" target="_blank" rel="noopener">安全工具交流群：1121237632</a></li>
+            <li><a href="https://qm.qq.com/q/nlGvFIMVKo" target="_blank" rel="noopener">共创世界第二实验室：1046685731</a></li>
+            <li><a href="https://qm.qq.com/q/obDWFVVPFu" target="_blank" rel="noopener">共创世界第3实验室：1046685731</a></li>
+            <li><a href="https://qm.qq.com/q/lvYU957LEs" target="_blank" rel="noopener">CSense交流群: 1060205044</a></li>
+            <li><a href="https://qm.qq.com/q/lQEXRo1bIm" target="_blank" rel="noopener">butterAny群聊：1108287067</a></li>
+            <li><a href="https://qm.qq.com/q/WkoFwFXlKk" target="_blank" rel="noopener">073's 技交群：907347503</a></li>
+        </ul>
+    </div>
+
+    <div class="category-title">工具分类</div>
+    <div id="tools-container"></div>
+
+    <div class="external-links">
+        <span class="label">其他工具站</span>
+        <a href="https://ccwtools.dpdns.org/" target="_blank" rel="noopener">CSense支持者的镜像站</a>
+        <a href="https://ccwtoolsbutterfly.dpdns.org/" target="_blank" rel="noopener">黄油的工具站</a>
+        <a href="https://tools.ahd2011.dpdns.org/" target="_blank" rel="noopener">073的工具站</a>
+        <a href="https://opensource-2.cc.cd/" target="_blank" rel="noopener">诺言の资源站</a>
+        <a href="https://us.chen-jin.dpdns.org/" target="_blank" rel="noopener">chen-jin的脚本库</a>
+        <a href="https://qingliu-los.github.io/YCence/" target="_blank" rel="noopener">Ysense</a>
+    </div>
+</div>
+
+<script>
+const tools = [
+    {
+        id: 'js-scripts',
+        name: 'JS Scripts',
+        author: 'ahd',
+        version: '1.0',
+        description: 'Tampermonkey/Violentmonkey 用户脚本集合',
+        file: 'js-scripts.html'
+    },
+    {
+        id: 'js-extensions',
+        name: 'JS Extensions',
+        author: 'ahd',
+        version: '1.0',
+        description: 'JS扩展工具集',
+        file: 'js-extensions.html'
+    },
+    {
+        id: 'py-tools',
+        name: 'Python Tools',
+        author: 'ahd',
+        version: '1.0',
+        description: 'Python工具脚本集合',
+        file: 'py-tools.html'
+    },
+    {
+        id: 'js-runnable',
+        name: 'Console JS',
+        author: 'ahd',
+        version: '1.0',
+        description: '可直接在浏览器控制台运行的 JavaScript 脚本',
+        file: 'js-runnable.html'
+    },
+    {
+        id: 'Cracked-Projects',
+        name: 'Cracked-Projects',
+        author: '110200',
+        version: '110.200',
+        description: '破解版作品',
+        file: 'Cracked-Projects.html'
+    },
+    {
+        id: 'exe-tools',
+        name: 'EXE-tools',
+        author: '110200',
+        version: '1.0',
+        description: '双击即可运行的exe工具',
+        file: 'exe-tools.html'
+    }
+];
+
+function esc(str) {
+    return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+}
+
+function createToolCard(tool) {
+    const card = document.createElement('div');
+    card.className = 'card clickable';
+    card.id = `card-${tool.id}`;
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', `open ${tool.name}`);
+    card.innerHTML = `
+        <div class="card-header">
+            <div>
+                <div class="card-name">${esc(tool.name)}</div>
+            </div>
+        </div>
+        <div class="card-desc">${esc(tool.description)}</div>
+        <div style="padding: 12px;">
+            <a href="${esc(tool.file)}" class="card-open-link">open &rarr;</a>
+        </div>
+    `;
+    card.addEventListener('click', (e) => {
+        if (e.target.closest('.card-open-link')) return;
+        document.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        window.location.href = tool.file;
+    });
+    card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            card.click();
+        }
+    });
+    return card;
+}
+
+function init() {
+    const container = document.getElementById('tools-container');
+    for (const tool of tools) {
+        container.appendChild(createToolCard(tool));
+    }
+}
+
+init();
+</script>
+</body>
+</html>

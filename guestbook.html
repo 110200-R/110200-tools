@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guestbook | Krelgimzy</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div>
+            <div class="header-title">[ Guestbook ]</div>
+            <div class="sub-desc">leave your message below</div>
+        </div>
+        <a href="index.html" class="back-link">&lt; BACK TO MAIN</a>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="rules-box">
+        <div class="rules-title">> RULES:</div>
+        <div>> Max 500 characters per message</div>
+        <div>> No spam or repeated messages (30s cooldown)</div>
+        <div>> No offensive language or links</div>
+        <div>> Messages are moderated automatically</div>
+    </div>
+
+    <textarea id="msgInput" placeholder="Enter your message..." maxlength="500"></textarea>
+    <div class="char-count"><span id="charCount">0</span>/500</div>
+    <button id="submitBtn">> SUBMIT</button>
+    <div id="statusMsg" class="status-msg"></div>
+    <div id="cooldownTimer" class="cooldown-timer"></div>
+
+    <div class="divider"></div>
+    <div id="msgList"></div>
+</div>
+
+<script>
+const API_URL = "https://krelgimzy.pandazys.workers.dev";
+const COOLDOWN_TIME = 30000;
+const MAX_LENGTH = 500;
+
+const inputEl = document.getElementById("msgInput");
+const submitBtn = document.getElementById("submitBtn");
+const listEl = document.getElementById("msgList");
+const statusMsgEl = document.getElementById("statusMsg");
+const charCountEl = document.getElementById("charCount");
+const cooldownTimerEl = document.getElementById("cooldownTimer");
+
+let lastSubmitTime = parseInt(localStorage.getItem('lastSubmitTime') || '0');
+let cooldownInterval = null;
+
+const blockedWords = [
+    'spam', 'fuck', 'shit', 'ass', 'damn', 'http', 'https', 'www.',
+    '.com', '.org', '.net', '.io', '.xyz', '广告', '刷屏',
+    '垃圾', '傻逼', '操你', '妈的', '去死', '滚'
+];
+
+function escapeHtml(str) {
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function showStatus(msg, isSuccess = false) {
+    statusMsgEl.textContent = '> ' + msg;
+    statusMsgEl.className = 'status-msg' + (isSuccess ? ' success' : '');
+    setTimeout(() => {
+        if (statusMsgEl.textContent === '> ' + msg) {
+            statusMsgEl.textContent = '';
+        }
+    }, 4000);
+}
+
+function updateCharCount() {
+    const len = inputEl.value.length;
+    charCountEl.textContent = len;
+    if (len > MAX_LENGTH * 0.9) {
+        charCountEl.style.color = '#ff4444';
+    } else if (len > MAX_LENGTH * 0.7) {
+        charCountEl.style.color = '#ffaa00';
+    } else {
+        charCountEl.style.color = '#70cc70';
+    }
+}
+
+function checkCooldown() {
+    const now = Date.now();
+    const timeSinceLastSubmit = now - lastSubmitTime;
+
+    if (timeSinceLastSubmit < COOLDOWN_TIME) {
+        const remaining = Math.ceil((COOLDOWN_TIME - timeSinceLastSubmit) / 1000);
+        submitBtn.disabled = true;
+        cooldownTimerEl.textContent = `> Cooldown: ${remaining}s`;
+
+        if (!cooldownInterval) {
+            cooldownInterval = setInterval(() => {
+                const timeNow = Date.now();
+                const timeLeft = Math.ceil((COOLDOWN_TIME - (timeNow - lastSubmitTime)) / 1000);
+
+                if (timeLeft <= 0) {
+                    clearInterval(cooldownInterval);
+                    cooldownInterval = null;
+                    submitBtn.disabled = false;
+                    cooldownTimerEl.textContent = '';
+                } else {
+                    cooldownTimerEl.textContent = `> Cooldown: ${timeLeft}s`;
+                }
+            }, 1000);
+        }
+        return true;
+    } else {
+        if (cooldownInterval) {
+            clearInterval(cooldownInterval);
+            cooldownInterval = null;
+        }
+        submitBtn.disabled = false;
+        cooldownTimerEl.textContent = '';
+        return false;
+    }
+}
+
+function containsBlockedWords(text) {
+    const lowerText = text.toLowerCase();
+    for (const word of blockedWords) {
+        if (lowerText.includes(word.toLowerCase())) {
+            return word;
+        }
+    }
+    return null;
+}
+
+function isSpam(content) {
+    const trimmedContent = content.trim();
+
+    if (trimmedContent.length < 3) {
+        return { valid: false, reason: 'Message too short (min 3 chars)' };
+    }
+
+    if (trimmedContent.length > MAX_LENGTH) {
+        return { valid: false, reason: `Message too long (max ${MAX_LENGTH} chars)` };
+    }
+
+    const blockedWord = containsBlockedWords(trimmedContent);
+    if (blockedWord) {
+        return { valid: false, reason: `Blocked word detected: "${blockedWord}"` };
+    }
+
+    const repeatPattern = /(.)\1{4,}/;
+    if (repeatPattern.test(trimmedContent)) {
+        return { valid: false, reason: 'Too many repeated characters' };
+    }
+
+    const linkPattern = /https?:\/\/|www\.|[a-zA-Z0-9-]+\.(com|org|net|io|xyz)/i;
+    if (linkPattern.test(trimmedContent)) {
+        return { valid: false, reason: 'Links are not allowed' };
+    }
+
+    const mostlySpaces = /^\s{10,}|\s{20,}/.test(trimmedContent);
+    if (mostlySpaces) {
+        return { valid: false, reason: 'Too many spaces' };
+    }
+
+    const allSameChar = /^(.)\1+$/.test(trimmedContent.replace(/\s/g, ''));
+    if (allSameChar && trimmedContent.replace(/\s/g, '').length > 5) {
+        return { valid: false, reason: 'Message consists of repeated characters' };
+    }
+
+    return { valid: true };
+}
+
+async function loadMessages() {
+    try {
+        const resp = await fetch(API_URL);
+        const data = await resp.json();
+        listEl.innerHTML = "";
+        if (!data || data.length === 0) {
+            listEl.innerHTML = `<div class="empty-tip">> No messages yet.</div>`;
+            return;
+        }
+        data.forEach(item => {
+            const div = document.createElement("div");
+            div.className = "msg-item";
+            div.innerHTML = `
+                <div class="msg-content">> ${escapeHtml(item.content)}</div>
+                <div class="msg-time">[${item.created}]</div>
+            `;
+            listEl.appendChild(div);
+        });
+    } catch (err) {
+        listEl.innerHTML = `<div class="empty-tip">> Failed to load messages.</div>`;
+        console.error(err);
+    }
+}
+
+async function submitMessage() {
+    const content = inputEl.value.trim();
+
+    if (!content) {
+        showStatus('Please input message.');
+        return;
+    }
+
+    if (checkCooldown()) {
+        showStatus(`Please wait ${Math.ceil((COOLDOWN_TIME - (Date.now() - lastSubmitTime)) / 1000)}s before submitting again.`);
+        return;
+    }
+
+    const spamCheck = isSpam(content);
+    if (!spamCheck.valid) {
+        showStatus(spamCheck.reason);
+        return;
+    }
+
+    submitBtn.disabled = true;
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                content: content,
+                timestamp: Date.now()
+            })
+        });
+
+        if (response.ok) {
+            localStorage.setItem('lastSubmitTime', Date.now().toString());
+            lastSubmitTime = Date.now();
+
+            inputEl.value = "";
+            updateCharCount();
+            showStatus('Message submitted successfully!', true);
+
+            checkCooldown();
+            await loadMessages();
+        } else {
+            showStatus('Failed to submit message. Server error.');
+        }
+    } catch (err) {
+        showStatus('Network error. Please try again.');
+        console.error(err);
+    } finally {
+        setTimeout(() => {
+            if (!checkCooldown()) {
+                submitBtn.disabled = false;
+            }
+        }, 1000);
+    }
+}
+
+inputEl.addEventListener('input', updateCharCount);
+submitBtn.addEventListener("click", submitMessage);
+
+inputEl.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && e.ctrlKey) {
+        submitMessage();
+    }
+});
+
+loadMessages();
+checkCooldown();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EXE Tools - 110200</title>
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .intro-section {
+            margin-bottom: 24px;
+        }
+        .intro-section h1 {
+            font-size: 28px;
+            margin-bottom: 12px;
+            color: var(--text);
+            transition: filter 0.3s ease;
+        }
+        .intro-section h1:hover {
+            filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.6));
+        }
+        .intro-section p {
+            font-size: 16px;
+            color: var(--text);
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        .intro-section a {
+            color: var(--accent-l);
+            text-decoration: none;
+            transition: all 0.25s var(--ease);
+            padding: 2px 4px;
+            border-radius: 4px;
+            outline: none;
+        }
+        .intro-section a:hover,
+        .intro-section a:focus-visible {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+            background: rgba(139, 92, 246, 0.1);
+        }
+        .intro-section a:focus-visible {
+            box-shadow: var(--neon-glow-sm);
+        }
+        .intro-section h2 {
+            font-size: 20px;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            color: var(--text);
+            transition: text-shadow 0.3s;
+        }
+        .intro-section h2:hover {
+            text-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+        }
+        .intro-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .intro-section ul li {
+            font-size: 15px;
+            color: var(--text);
+            margin-bottom: 8px;
+            line-height: 1.6;
+            padding: 6px 12px;
+            border-radius: var(--radius-xs);
+            border-left: 3px solid transparent;
+            transition: all 0.25s var(--ease);
+            outline: none;
+        }
+        .intro-section ul li:hover,
+        .intro-section ul li:focus-visible,
+        .intro-section ul li:focus-within {
+            background: rgba(139, 92, 246, 0.08);
+            border-left-color: var(--accent);
+            transform: translateX(6px);
+            color: var(--text);
+        }
+        .intro-section ul li a {
+            color: var(--accent-l);
+            text-decoration: none;
+            transition: all 0.25s var(--ease);
+            outline: none;
+        }
+        .intro-section ul li a:hover,
+        .intro-section ul li a:focus-visible {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+        }
+        .intro-section ul li a:focus-visible {
+            box-shadow: var(--neon-glow-sm);
+            border-radius: 4px;
+        }
+        .category-title {
+            font-size: 20px;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            color: var(--text);
+            transition: text-shadow 0.3s;
+        }
+        .category-title:hover {
+            text-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+        }
+        .card.clickable {
+            cursor: pointer;
+        }
+        .card.clickable:active {
+            transform: translateY(-1px) scale(0.995);
+        }
+        .card-open-link {
+            color: var(--accent-l);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 6px 14px;
+            border-radius: var(--radius-xs);
+            display: inline-block;
+            transition: all 0.25s var(--ease);
+            outline: none;
+            border: 1px solid transparent;
+        }
+        .card-open-link:hover,
+        .card-open-link:focus-visible {
+            color: #ffffff;
+            background: rgba(139, 92, 246, 0.15);
+            border-color: var(--border);
+            text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+            transform: scale(1.04);
+        }
+        .card-open-link:focus-visible {
+            box-shadow: var(--neon-glow-sm);
+        }
+        .card-open-link:active {
+            transform: scale(0.95);
+        }
+        .list-status {
+            color: var(--text-dim);
+            font-size: 15px;
+            padding: 12px 0;
+        }
+        .project-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-xs);
+            margin-right: 12px;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1px solid var(--border-soft);
+            background: var(--code-bg);
+        }
+        .card-header .project-icon {
+            transition: box-shadow 0.3s var(--ease);
+        }
+        .card:hover .project-icon {
+            box-shadow: var(--neon-glow-sm);
+        }
+        .project-name-row {
+            display: flex;
+            align-items: center;
+        }
+        .version-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            padding: 3px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent-l);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: all 0.25s var(--ease);
+            z-index: 12;
+        }
+        .card:hover .version-badge {
+            box-shadow: var(--neon-glow-sm);
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="back-link"><a href="index.html">[back to index]</a></div>
+    <div class="intro-section">
+        <h1>EXE Tools</h1>
+        <p>exe文件类工具列表，点击卡片或下载链接即可获取文件</p>
+
+        <h2>说明</h2>
+        <ul>
+            <li>本页工具均为 exe 可执行文件，请自行确认安全性后再运行</li>
+            <li>点击卡片任意位置或下方 download 链接均可下载对应文件</li>
+            <li>使用该网站的工具则证明你不用于任何非法目的，违者后果自负</li>
+        </ul>
+    </div>
+
+    <div class="category-title">工具列表</div>
+    <div id="projects-container"></div>
+</div>
+
+<script>
+const projects = [
+    {
+        id: 'ccw-Projects',
+        name: 'CCW作品下载器',
+        author: 'Kernel',
+        icon: 'https://m.ccw.site/community/images/logo-ccw.png',
+        version: '10.0',
+        desc: '获取CCW作品的工具，支持批量获取',
+        url: 'EXE/CCW作品下载器.exe'
+    },
+    {
+        id: 'XCE-Setup',
+        name: 'XCE-Setup',
+        author: '云云-虚舟实验室',
+        icon: 'https://130.wiki/wiki/File:XMUER.png',
+        version: '4.0.2',
+        desc: '一个类scratch的AI编辑器 支持用AI写代码块',
+        url: 'EXE/XCE-Setup-4.0.2.exe'
+    }
+];
+
+function esc(str) {
+    return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+}
+
+function createProjectCard(item) {
+    const card = document.createElement('div');
+    card.className = 'card clickable';
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', 'open ' + item.name);
+    card.innerHTML = `
+        <span class="version-badge">v${esc(item.version)}</span>
+        <div class="card-header">
+            <div class="project-name-row">
+                <img src="${esc(item.icon)}" class="project-icon" alt="${esc(item.name)} icon">
+                <div>
+                    <div class="card-name">${esc(item.name)}</div>
+                    <div class="card-meta">
+                        <span>author: ${esc(item.author) || 'unknown'}</span>
+                        <span>version: ${esc(item.version)}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-desc">${esc(item.desc) || '无描述'}</div>
+        <div style="padding: 12px;">
+            <a href="${esc(item.url)}" class="card-open-link" download>download &rarr;</a>
+        </div>
+    `;
+    card.addEventListener('click', (e) => {
+        if (e.target.closest('.card-open-link')) return;
+        window.location.href = item.url;
+    });
+    card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            card.click();
+        }
+    });
+    return card;
+}
+
+function init() {
+    const container = document.getElementById('projects-container');
+    if (!Array.isArray(projects) || projects.length === 0) {
+        container.innerHTML = '<p class="list-status">暂无工具</p>';
+        return;
+    }
+    for (const item of projects) {
+        container.appendChild(createProjectCard(item));
+    }
+}
+
+init();
+</script>
+</body>
+</html>

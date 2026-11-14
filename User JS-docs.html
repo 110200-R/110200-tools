@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>用户脚本安装教程 - CCW</title>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+
+    <div class="back-link">
+      <a href="js-scripts.html">← 返回上一页</a>
+    </div>
+
+    <h1 class="header-title">用户脚本安装教程</h1>
+    <p class="sub-desc">
+      通过浏览器插件安装，每次访问指定网页时会自动执行。
+    </p>
+
+    <div class="divider"></div>
+
+    <div class="card" tabindex="0">
+      <div class="card-header">
+        <div>
+          <div class="card-name">安装浏览器插件</div>
+          <div class="card-meta">
+            <span>推荐暴力猴</span>
+            <span>需开启同步 page 模式</span>
+          </div>
+        </div>
+        <span class="badge warning">前置步骤</span>
+      </div>
+
+      <p class="card-desc">
+        推荐选择暴力猴，因为篡改猴加载速度会更慢，可能会带来一些问题。暴力猴要开启同步 page 模式。
+      </p>
+
+      <div class="rules-box">
+        <div class="rules-title">📥 下载地址</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
+          <a class="glass-btn" href="扩展程序/篡改猴 5.5.1.crx" target="_blank" rel="noopener">篡改猴 (Chrome)</a>
+          <a class="glass-btn" href="https://www.crxsoso.com/addon/detail/eeagobfjdenkkddmbclomhiblgggliao" target="_blank" rel="noopener">暴力猴 (Chrome)</a>
+          <a class="glass-btn" href="https://addons.mozilla.org/zh-CN/firefox/addon/tampermonkey/" target="_blank" rel="noopener">篡改猴 (Firefox)</a>
+          <a class="glass-btn" href="https://addons.mozilla.org/zh-CN/firefox/addon/violentmonkey/" target="_blank" rel="noopener">暴力猴 (Firefox)</a>
+          <a class="glass-btn" href="https://microsoftedge.microsoft.com/addons/detail/iikmkjmpaadaobahmlepeloendndfphd" target="_blank" rel="noopener">篡改猴 (Edge)</a>
+          <a class="glass-btn" href="https://microsoftedge.microsoft.com/addons/detail/eeagobfjdenkkddmbclomhiblgggliao" target="_blank" rel="noopener">暴力猴 (Edge)</a>
+        </div>
+      </div>
+
+      <div class="section border-left-warning">
+        <div class="section-title">⚠️ 重要：允许用户脚本</div>
+        <div style="font-size:13px; color:var(--text-dim); line-height:1.8;">
+          需要给篡改猴或暴力猴开启「允许用户脚本」选项。
+        </div>
+      </div>
+
+      <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
+        <img width="200" alt="允许用户脚本" src="image/9.jpg"
+             style="border-radius:var(--radius-sm); border:1px solid var(--border-soft);" />
+        <img width="500" alt="允许用户脚本" src="image/10.jpg"
+             style="border-radius:var(--radius-sm); border:1px solid var(--border-soft); max-width:100%;" />
+      </div>
+    </div>
+
+    <div class="card" tabindex="0">
+      <div class="card-header">
+        <div class="card-name">安装用户脚本</div>
+        <span class="badge">三种方式</span>
+      </div>
+      <p class="card-desc">在线安装、通过脚本链接安装、离线安装，任选其一。</p>
+
+      <div class="section border-left-success">
+        <div class="section-title">① 在线安装</div>
+        <ol style="padding-left:18px; color:var(--text-dim); font-size:13px; line-height:1.9;">
+          <li>访问 <a href="js-scripts.html" class="text-glow">用户脚本列表</a></li>
+          <li>点击任意脚本，会询问是否安装</li>
+        </ol>
+        <img width="600" alt="询问是否安装" src="image/11.jpg"
+             style="border-radius:var(--radius-sm); border:1px solid var(--border-soft); max-width:100%; margin-top:8px;" />
+      </div>
+
+      <div class="section border-left-info">
+        <div class="section-title">② 通过脚本链接安装</div>
+        <ol style="padding-left:18px; color:var(--text-dim); font-size:13px; line-height:1.9;">
+          <li>打开篡改猴或暴力猴的管理面板</li>
+          <li>篡改猴点「通过 url 安装」，暴力猴点「通过地址安装」</li>
+          <li>点击安装</li>
+        </ol>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:8px;">
+          <img width="744" alt="篡改猴" src="image/6.jpg"
+               style="border-radius:var(--radius-sm); border:1px solid var(--border-soft); max-width:100%;" />
+          <img width="292" alt="暴力猴" src="image/7.jpg"
+               style="border-radius:var(--radius-sm); border:1px solid var(--border-soft); max-width:100%;" />
+        </div>
+      </div>
+
+      <div class="section border-left-gold">
+        <div class="section-title">③ 离线安装</div>
+        <ol style="padding-left:18px; color:var(--text-dim); font-size:13px; line-height:1.9;">
+          <li>打开篡改猴或暴力猴的管理面板</li>
+          <li>把下载好的 js 文件拖进去，会询问是否安装</li>
+        </ol>
+        <img width="600" alt="拖动文件" src="image/8.jpg"
+             style="border-radius:var(--radius-sm); border:1px solid var(--border-soft); max-width:100%; margin-top:8px;" />
+      </div>
+    </div>
+
+    <div class="card" tabindex="0">
+      <div class="card-header">
+        <div class="card-name">常见问题</div>
+        <span class="badge info">FAQ</span>
+      </div>
+
+      <div class="rules-box" style="border-left-color:var(--warning);">
+        <div class="rules-title">脚本没有生效怎么办？</div>
+        <ul style="padding-left:18px; color:var(--text-dim); font-size:13px; line-height:1.9;">
+          <li>确认脚本已启用，并且匹配的网址正确</li>
+          <li>检查浏览器插件是否有权限访问该网站</li>
+          <li>尝试刷新页面，或重启浏览器</li>
+          <li>查看浏览器控制台是否有报错信息</li>
+        </ul>
+      </div>
+
+      <div class="rules-box" style="border-left-color:var(--info);">
+        <div class="rules-title">🔄 如何更新脚本？</div>
+        <ul style="padding-left:18px; color:var(--text-dim); font-size:13px; line-height:1.9;">
+          <li>重新访问脚本链接并安装即可覆盖旧版本</li>
+          <li>部分插件支持自动更新，可在设置中开启</li>
+        </ul>
+      </div>
+
+      <div class="rules-box" style="border-left-color:var(--danger);">
+        <div class="rules-title">🚫 安装时提示“无法安装脚本”？</div>
+        <ul style="padding-left:18px; color:var(--text-dim); font-size:13px; line-height:1.9;">
+          <li>确保已开启篡改猴/暴力猴的“允许用户脚本”选项</li>
+          <li>检查脚本文件是否完整，尝试重新下载</li>
+          <li>如果是远程链接，确认链接可正常访问</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="back-link" style="display:flex; gap:12px; flex-wrap:wrap;">
+      <a href="js-scripts.html">← 返回脚本列表</a>
+      <a href="js-scripts.html">← 返回上一页</a>
+    </div>
+
+  </div>
+</body>
+</html>

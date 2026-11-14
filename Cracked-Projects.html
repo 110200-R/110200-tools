@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cracked Projects - CCW</title>
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .intro-section {
+            margin-bottom: 24px;
+        }
+        .intro-section h1 {
+            font-size: 28px;
+            margin-bottom: 12px;
+            color: var(--text);
+            transition: filter 0.3s ease;
+        }
+        .intro-section h1:hover {
+            filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.6));
+        }
+        .intro-section p {
+            font-size: 16px;
+            color: var(--text);
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        .intro-section a {
+            color: var(--accent-l);
+            text-decoration: none;
+            transition: all 0.25s var(--ease);
+            padding: 2px 4px;
+            border-radius: 4px;
+            outline: none;
+        }
+        .intro-section a:hover,
+        .intro-section a:focus-visible {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+            background: rgba(139, 92, 246, 0.1);
+        }
+        .intro-section a:focus-visible {
+            box-shadow: var(--neon-glow-sm);
+        }
+        .intro-section h2 {
+            font-size: 20px;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            color: var(--text);
+            transition: text-shadow 0.3s;
+        }
+        .intro-section h2:hover {
+            text-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+        }
+        .intro-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .intro-section ul li {
+            font-size: 15px;
+            color: var(--text);
+            margin-bottom: 8px;
+            line-height: 1.6;
+            padding: 6px 12px;
+            border-radius: var(--radius-xs);
+            border-left: 3px solid transparent;
+            transition: all 0.25s var(--ease);
+            outline: none;
+        }
+        .intro-section ul li:hover,
+        .intro-section ul li:focus-visible,
+        .intro-section ul li:focus-within {
+            background: rgba(139, 92, 246, 0.08);
+            border-left-color: var(--accent);
+            transform: translateX(6px);
+            color: var(--text);
+        }
+        .intro-section ul li a {
+            color: var(--accent-l);
+            text-decoration: none;
+            transition: all 0.25s var(--ease);
+            outline: none;
+        }
+        .intro-section ul li a:hover,
+        .intro-section ul li a:focus-visible {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+        }
+        .intro-section ul li a:focus-visible {
+            box-shadow: var(--neon-glow-sm);
+            border-radius: 4px;
+        }
+        .category-title {
+            font-size: 20px;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            color: var(--text);
+            transition: text-shadow 0.3s;
+        }
+        .category-title:hover {
+            text-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+        }
+        .card.clickable {
+            cursor: pointer;
+        }
+        .card.clickable:active {
+            transform: translateY(-1px) scale(0.995);
+        }
+        .card-open-link {
+            color: var(--accent-l);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 6px 14px;
+            border-radius: var(--radius-xs);
+            display: inline-block;
+            transition: all 0.25s var(--ease);
+            outline: none;
+            border: 1px solid transparent;
+        }
+        .card-open-link:hover,
+        .card-open-link:focus-visible {
+            color: #ffffff;
+            background: rgba(139, 92, 246, 0.15);
+            border-color: var(--border);
+            text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+            transform: scale(1.04);
+        }
+        .card-open-link:focus-visible {
+            box-shadow: var(--neon-glow-sm);
+        }
+        .card-open-link:active {
+            transform: scale(0.95);
+        }
+        .list-status {
+            color: var(--text-dim);
+            font-size: 15px;
+            padding: 12px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="back-link"><a href="index.html">[back to index]</a></div>
+    <div class="intro-section">
+        <h1>Cracked Projects</h1>
+        <p>破解版作品列表，作品旧版可能和新版不兼容</p>
+
+        <h2>说明</h2>
+        <ul>
+            <li>使用前请先安装作品替换器，详见<a href="Cracked Projects/docs.html">使用教程</a></li>
+            <li>下载作品后访问原作品页，使用作品替换器替换成下载的破解版作品</li>
+            <li>使用该网站的工具与作品则证明你不用于任何非法目的，违者后果自负</li>
+        </ul>
+    </div>
+
+    <div class="category-title">作品列表</div>
+    <div id="projects-container"></div>
+</div>
+
+<script>
+const projects = [
+    {
+        name: "cave.io V1.7.114723 破解版",
+        url: "Cracked Projects/cave.io V1.7.114723 破解版.sb3",
+        desc: "删除了一些检测",
+        author: "不想上学"
+    },
+    {
+        name: "cave.io V1.7.114722 破解版",
+        url: "Cracked Projects/cave.io V1.7.114722 破解版.sb3",
+        desc: "删除了CSense检测、盗作检测、部分防篡改检测（与V1.7.114723新版不兼容）",
+        author: "不想上学"
+    },
+    {
+        name: "cave.io V1.7.114722 破解版2",
+        url: "Cracked Projects/cave.io V1.7.114722 破解版.sb3",
+        desc: "可以直接点技能+给经验（c和i）（与V1.7.114723新版不兼容）"
+    },
+    {
+        name: "散弹之王破解版",
+        url: "Cracked Projects/散弹之王破解版.sb3",
+        desc: "未知来源 原站未标明作者",
+        author: "未知来源"
+    },
+    {
+        name: "MC联机乱斗破解器",
+        url: "Cracked Projects/MC联机乱斗天昏地暗之物.sprite3",
+        desc: "按下空格调出面板",
+        author: "110200"
+    },
+    {
+        name: "核心共振破解版",
+        url: "Cracked Projects/核心共振破解版.sb3",
+        desc: "自动解锁所有头像框 商店所有物品免费 自动改名 自动改头像",
+        author: "110200"
+    },
+    {
+        name: "MG2外挂pro",
+        url: "Cracked Projects/MG2外挂pro.sprite3",
+        desc: "改名为110200 开发者的封禁面板 开发者的开挂面板",
+        author: "110200"
+    }
+];
+
+function esc(str) {
+    return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+}
+
+function createProjectCard(item) {
+    const card = document.createElement('div');
+    card.className = 'card clickable';
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', 'open ' + item.name);
+    card.innerHTML = `
+        <div class="card-header">
+            <div>
+                <div class="card-name">${esc(item.name)}</div>
+                <div class="card-meta">
+                    <span>author: ${esc(item.author) || 'unknown'}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-desc">${esc(item.desc) || '无描述'}</div>
+        <div style="padding: 12px;">
+            <a href="${esc(item.url)}" class="card-open-link" download>download &rarr;</a>
+        </div>
+    `;
+    card.addEventListener('click', (e) => {
+        if (e.target.closest('.card-open-link')) return;
+        window.location.href = item.url;
+    });
+    card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            card.click();
+        }
+    });
+    return card;
+}
+
+function init() {
+    const container = document.getElementById('projects-container');
+    if (!Array.isArray(projects) || projects.length === 0) {
+        container.innerHTML = '<p class="list-status">暂无作品</p>';
+        return;
+    }
+    for (const item of projects) {
+        container.appendChild(createProjectCard(item));
+    }
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User JS Scripts - Krelgimzy</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        .project-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-xs);
+            margin-right: 12px;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1px solid var(--border-soft);
+            background: var(--code-bg);
+        }
+        .project-icon-svg {
+            width: 40px;
+            height: 40px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-xs);
+            border: 1px solid var(--border-soft);
+            background: var(--code-bg);
+            overflow: hidden;
+            transition: box-shadow 0.3s var(--ease);
+        }
+        .project-icon-svg svg {
+            width: 32px;
+            height: 32px;
+            display: block;
+        }
+        .card-header .project-icon,
+        .card-header .project-icon-svg {
+            transition: box-shadow 0.3s var(--ease);
+        }
+        .card:hover .project-icon,
+        .card:hover .project-icon-svg {
+            box-shadow: var(--neon-glow-sm);
+        }
+        .card.clickable {
+            cursor: pointer;
+        }
+        .card.clickable:active {
+            transform: translateY(-1px) scale(0.995);
+        }
+        .version-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            padding: 3px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent-l);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: all 0.25s var(--ease);
+            z-index: 12;
+        }
+        .card:hover .version-badge {
+            box-shadow: var(--neon-glow-sm);
+            color: #ffffff;
+        }
+        #versions-container .card {
+            padding: 20px;
+        }
+        #versions-container .card-header {
+            margin-bottom: 8px;
+            padding-right: 72px;
+        }
+        #project-header .card {
+            cursor: default;
+        }
+        #project-header .card.clickable {
+            cursor: pointer;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .project-name-row {
+            display: flex;
+            align-items: center;
+        }
+        .back-project {
+            margin-bottom: 20px;
+        }
+        .back-project a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: var(--radius-xs);
+            transition: all 0.25s var(--ease);
+            display: inline-block;
+            outline: none;
+        }
+        .back-project a:hover,
+        .back-project a:focus-visible {
+            color: var(--text);
+            background: rgba(139, 92, 246, 0.1);
+            transform: translateX(-4px);
+            text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+        }
+        .back-project a:focus-visible {
+            box-shadow: var(--neon-glow-sm);
+        }
+        .tab-content .copy-status {
+            display: inline-block;
+        }
+        .empty-tip {
+            color: var(--text-muted);
+            padding: 16px 0;
+            text-align: center;
+            font-size: 13px;
+        }
+        .toolbar {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .toolbar .nav-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            color: var(--text-dim);
+            padding: 8px 16px;
+            border-radius: var(--radius-xs);
+            border: 1px solid var(--border-soft);
+            background: transparent;
+            transition: all 0.25s var(--ease);
+            cursor: pointer;
+            outline: none;
+        }
+        .toolbar .nav-link-btn:hover,
+        .toolbar .nav-link-btn:focus-visible {
+            color: var(--text);
+            background: rgba(139, 92, 246, 0.1);
+            border-color: var(--border);
+            box-shadow: var(--neon-glow-sm);
+            transform: translateY(-1px);
+        }
+        .toolbar .nav-link-btn:focus-visible {
+            box-shadow: var(--neon-glow-sm), 0 0 0 2px var(--accent);
+        }
+        .branch-divider {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            margin: 24px 0 12px;
+            position: relative;
+        }
+        .branch-divider span {
+            display: inline-block;
+            padding: 0 14px;
+            background: var(--bg);
+            position: relative;
+            z-index: 1;
+        }
+        .branch-divider::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 1px;
+            background: var(--border-soft);
+        }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-panel {
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            width: 600px;
+            max-width: 90vw;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), var(--neon-glow-sm);
+            overflow: hidden;
+        }
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-soft);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--accent-l);
+            letter-spacing: 0.3px;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: var(--radius-xs);
+            transition: all 0.2s var(--ease);
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: var(--text);
+            background: rgba(139, 92, 246, 0.1);
+        }
+        .modal-toolbar {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-soft);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .modal-count {
+            color: var(--text-dim);
+            font-size: 12px;
+            margin-left: auto;
+        }
+        .modal-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 20px;
+        }
+        .batch-item {
+            display: flex;
+            align-items: center;
+            padding: 9px 0;
+            border-bottom: 1px solid var(--border-soft);
+            gap: 10px;
+        }
+        .batch-item:last-child {
+            border-bottom: none;
+        }
+        .batch-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .batch-item label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text);
+            line-height: 1.5;
+        }
+        .batch-item .batch-project {
+            color: var(--text-dim);
+        }
+        .batch-item .batch-meta {
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+        .modal-footer {
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-soft);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="projectList">
+        <div class="back-link"><a href="index.html">[back to index]</a></div>
+        <div class="header-title">User JS Scripts</div>
+        <div class="sub-desc">tampermonkey / violentmonkey scripts collection</div>
+        <div class="divider"></div>
+        <div class="toolbar">
+            <button id="batchInstallBtn" class="glass-btn">批量安装脚本</button>
+            <a href="User JS-docs.html" class="nav-link-btn" aria-label="使用教程">📖 使用教程</a>
+        </div>
+        <div id="scripts-container"></div>
+    </div>
+
+    <div id="batchModal" class="hidden modal-overlay">
+        <div class="modal-panel">
+            <div class="modal-header">
+                <span class="modal-title">选择要安装的脚本</span>
+                <button id="batchCloseBtn" class="modal-close" aria-label="close">&#215;</button>
+            </div>
+            <div class="modal-toolbar">
+                <button id="batchSelectAll" class="glass-btn">全选</button>
+                <button id="batchDeselectAll" class="glass-btn">取消全选</button>
+                <span id="batchCount" class="modal-count">已选 0 个</span>
+            </div>
+            <div id="batchList" class="modal-list"></div>
+            <div class="modal-footer">
+                <button id="batchCancelBtn" class="glass-btn">取消</button>
+                <button id="batchConfirmBtn" class="glass-btn primary">确认安装</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="projectDetail" class="hidden">
+        <div class="back-project">
+            <a href="#" onclick="showProjectList(); return false;">&larr; back to scripts</a>
+        </div>
+        <div id="project-header"></div>
+        <div class="divider"></div>
+        <div id="versions-container"></div>
+    </div>
+</div>
+
+<script>
+const csenseIcon = `<svg fill="none" version="1.1" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><g transform="matrix(1,0,0,-1,0,80)"><g transform="matrix(1,0,0,-1,0,160)"><path d="m9.4332 86.067-1.7864-1.782c-4.6571 3.6624-7.6468 9.3405-7.6468 15.715 0 5.3448 2.1018 10.2 5.5258 13.788l1.7728-1.7684c-2.9708-3.1349-4.7924-7.365-4.7924-12.019 0-5.6848 2.7174-10.737 6.927-13.933zm2.7405 29.575-1.8541 1.8496c2.8814 1.5984 6.1991 2.5088 9.7299 2.5088 10.396 0 18.945-7.8934 19.95-18h-2.5205c-0.9949 8.7231-8.4191 15.5-17.43 15.5-2.8321 0-5.5075-0.6695-7.8758-1.8584zm19.256-28.96 1.6169-1.9102c-3.5-2.9753-8.0385-4.7712-12.997-4.7712-1.6482 0-3.2499 0.19838-4.7825 0.57251l2.1313 2.126c0.8646-0.13074 1.75-0.19853 2.6512-0.19853 4.3427 0 8.3169 1.574 11.38 4.1814z" fill="#30D34B" fill-rule="evenodd"/><path d="m20.05 86.045v-0.045285c-6.0798 0-11.257 3.8564-13.207 9.2507-1.9631 5.3748-0.47868 11.63 4.1686 15.519 5.4162 4.5336 13.258 4.2889 18.375-0.2846l-0.0192-0.0161c2.4219-2.1464 4.0939-5.1163 4.5748-8.4695h-5.0945q-0.1527 0.6663-0.4092 1.3128-0.6879 1.7331-2.0091 3.0512-1.3213 1.318-3.0587 2.0041-1.6001 0.6319-3.3211 0.6319-1.7209 0-3.321-0.6319-1.7374-0.6861-3.0587-2.0041-1.3213-1.3181-2.0091-3.0512-0.63347-1.5961-0.63346-3.3128 0-1.5702 0.52996-3.0395 0.54154-1.4842 1.5643-2.7 1.1062-1.3151 2.62-2.1316 1.6437-0.8866 3.5051-1.049 1.8615-0.16246 3.6345 0.42595 1.633 0.54193 2.9513 1.6454l3.2219-3.8302c-2.6269-2.1988-5.8244-3.2736-9.0047-3.2757z" fill="#1E9F33" fill-rule="evenodd"/></g></g></svg>`;
+
+const projects = [
+    {
+        id: 'csense',
+        name: 'CSense',
+        author: '不想上学、熊谷凌',
+        icon: csenseIcon,
+        isSvg: true,
+        description: '一个 CCW 安全审计工具系列，包含多个版本和功能变体',
+        versions: [
+            { version: '0.1.5', name: 'Csence 0.1.5', author: '熊谷凌', description: 'CSence目前的正式版', file: 'User-Script/files/csence0.1.5.js' },
+            { version: '0.1.5-lite', name: 'Csence 0.1.5 Lite', author: '熊谷凌、不想上学', description: 'CS增强工具轻量版', file: 'User-Script/files/CSense0.1.5极速版.user.js' },
+            { version: '0.1.5a4.1', name: 'Csence 0.1.5a4.1', author: '熊谷凌、不想上学', description: 'CS增强工具防检测版', file: 'User-Script/files/CSense防检测4.1.user.js' },
+            { version: '0.1.5', name: 'CSense', author: '熊谷凌、不想上学', description: '一个 CCW 安全审计工具', file: 'User-Script/files/CSense0.1.5.user.js' },
+            { version: '0.1.5-lite', name: 'CSense极速版', author: '熊谷凌、不想上学', description: 'CSense极速版，更轻量', file: 'User-Script/files/CSense0.1.5极速版.user.js' },
+            { version: '0.1.4', name: 'CSense0.1.4', author: '熊谷凌', description: '已删除密钥验证', file: 'User-Script/files/CSense0.1.4.user.js' },
+            { version: '0.1.3', name: 'CSense0.1.3', author: '熊谷凌', description: '已去除后门', file: 'User-Script/files/CSense0.1.3.user.js' },
+            { version: '2.0', name: 'CSense防检测2', author: '熊谷凌、不想上学', description: 'CSense防检测版本2', file: 'User-Script/files/CSense防检测2.user.js' },
+            { version: '3.3', name: 'CSense防检测3.3', author: '熊谷凌、不想上学', description: 'CSense防检测版本3.3', file: 'User-Script/files/CSense防检测3.3.user.js' },
+            { version: '4.0', name: 'CSense防检测4.0', author: '熊谷凌、不想上学', description: 'CSense防检测版本4.0', file: 'User-Script/files/CSense防检测4.0.user.js' },
+            { version: '4.1', name: 'CSense防检测4.1', author: '熊谷凌、不想上学', description: 'CSense防检测版本4.1', file: 'User-Script/files/CSense防检测4.1.user.js' }
+        ]
+    },
+    {
+        id: 'chibi-eureka',
+        name: 'Chibi / Eureka',
+        author: 'SimonShiki',
+        icon: 'https://m.ccw.site//gandi/eureka.svg',
+        isSvg: false,
+        description: 'Scratch 扩展加载器系列，可在各种 Scratch 社区加载自定义扩展',
+        versions: [
+            { version: '11.5.0', name: 'Eureka 11.5', author: 'SimonShiki', description: 'Eureka 11.5 - 最新稳定版', file: 'eureka-chibi/eureka.user.js' },
+            { version: '11.4.0', name: 'Eureka 11.4', author: 'SimonShiki', description: 'Eureka 11.4', file: 'eureka-chibi/eureka.user-2.js' },
+            { version: '11.3.0', name: 'Eureka 11.3', author: 'SimonShiki', description: 'Eureka 11.3', file: 'eureka-chibi/eureka.user-3.js' },
+            { version: '11.2.0', name: 'Eureka 11.2', author: 'SimonShiki', description: 'Eureka 11.2', file: 'eureka-chibi/eureka.user-4.js' },
+            { version: '11.1.0', name: 'Eureka 11.1', author: 'SimonShiki', description: 'Eureka 11.1', file: 'eureka-chibii/eureka.user-5.js' },
+            { version: '11.0.0', name: 'Eureka 11', author: 'SimonShiki', description: 'Eureka 11', file: 'eureka-chibi/eureka.user-6.js' },
+            { version: '10.1.0', name: 'Eureka 10.1', author: 'SimonShiki', description: 'Eureka 10.1', file: 'eureka-chibi/eureka.user-7.js' },
+            { version: '10.0.0', name: 'Eureka 10', author: 'SimonShiki', description: 'Eureka 10', file: 'eureka-chibi/eureka.user-8.js' },
+            { version: '8.1', name: 'Eureka 8.1', author: 'SimonShiki', description: 'Eureka 8.1 (eureka-loader)', file: 'eureka-chibi/eureka-loader.user.js' },
+            { version: '7.0', name: 'Eureka 7', author: 'SimonShiki', description: 'Eureka 7 (eureka-loader)', file: 'eureka-chibi/eureka-loader.user-2.js' },
+            { version: '6.2', name: 'Eureka 6.2', author: 'SimonShiki', description: 'Eureka 6.2 紧急热修复版', file: 'eureka-chibi/eureka-loader.user-3.js' },
+            { version: '5', name: 'Chibi 5', author: 'SimonShiki', description: 'Chibi 5', file: 'eureka-chibi/chibi.user.js' },
+            { version: '4', name: 'Chibi 4', author: 'SimonShiki', description: 'Chibi 4', file: 'eureka-chibi/chibi.user-2.js' },
+            { version: '0.0.2', name: 'Chibi 0.0.2', author: 'SimonShiki', description: 'Chibi 早期版本', file: 'eureka-chibi/chibi.user-3.js' },
+            { version: '0.0.1', name: 'Chibi 0.0.1', author: 'SimonShiki', description: 'Chibi 首个版本', file: 'eureka-chibi/chibi.user-4.js' }
+        ]
+    },
+    {
+        id: 'csrt',
+        name: 'CSRT',
+        author: '110200',
+        icon: 'https://m.ccw.site/gandi_application/RL.png',
+        isSvg: false,
+        description: 'CCW Security Research Tool - 综合安全研究工具，拥有完整扩展拦截、代码修改、附加功能、经济合约、伪装手机号、伪装身份、修改作品数据、无视黑名单等众多工具',
+        versions: [
+            { version: '2.9.7', name: 'CSRT v2.9.7', author: '110200', description: 'CSRT 最新版 - 完整扩展拦截 | 代码修改 | 附加功能 | 经济合约 | 伪装手机号 | 成就排行 | 变量折叠 | 作品替换 | 作品下载 | 毛玻璃UI | 变量管理 | 云数据 | 排行榜', file: 'csrt-versions/2.9.7.user.js' },
+            { version: '2.9.6', name: 'CSRT v2.9.6', author: '110200', description: 'CSRT v2.9.6', file: 'csrt-versions/2.9.6.user.js' },
+            { version: '2.9.5', name: 'CSRT v2.9.5', author: '110200', description: 'CSRT v2.9.5', file: 'csrt-versions/2.9.5.user.js' },
+            { version: '2.9.4', name: 'CSRT v2.9.4', author: '110200', description: 'CSRT v2.9.4', file: 'csrt-versions/2.9.4.user.js' },
+            { version: '2.9.3', name: 'CSRT v2.9.3', author: '110200', description: 'CSRT v2.9.3', file: 'csrt-versions/2.9.3.user.js' },
+            { version: '2.9.2', name: 'CSRT v2.9.2', author: '110200', description: 'CSRT v2.9.2', file: 'csrt-versions/2.9.2.user.js' },
+            { version: '2.9.1', name: 'CSRT v2.9.1', author: '110200', description: 'CSRT v2.9.1', file: 'csrt-versions/2.9.1.user.js' },
+            { version: '2.9.0', name: 'CSRT v2.9.0', author: '110200', description: 'CSRT v2.9.0', file: 'csrt-versions/2.9.0.user.js' },
+            { version: '2.8.9', name: 'CSRT v2.8.9 (群文件版)', author: '110200', description: 'CSRT 群文件版本 - 完整扩展拦截 | 代码修改 | 附加功能 | 经济合约 | 伪装手机号 | 成就排行 | 变量折叠 | 作品替换 | 作品下载 | 毛玻璃UI | 变量管理 | 云数据 | 排行榜', file: '群文件脚本/CSRT v2.8.9.js' },
+            { version: '2.6.0', name: 'CSRT v2.6.0 (群文件版)', author: '110200', description: 'CSRT 群文件版本 - 完整扩展拦截 | 代码修改 | 附加功能 | 经济合约 | 伪装手机号 | 伪装身份 | 修改作品数据 | 无视黑名单', file: '群文件脚本/CSRT v.2.6.0.js' },
+            { version: '2.5.0', name: 'CSRT v2.5.0', author: '110200', description: 'CSRT v2.5.0', file: 'csrt-versions/2.5.0.user.js' },
+            { version: '2.4.0', name: 'CSRT v2.4.0', author: '110200', description: 'CSRT v2.4.0', file: 'csrt-versions/2.4.0.user.js' },
+            { version: '2.3.0', name: 'CSRT v2.3.0', author: '110200', description: 'CSRT v2.3.0', file: 'csrt-versions/2.3.0.user.js' },
+            { version: '2.1.0', name: 'CSRT v2.1.0', author: '110200', description: 'CSRT v2.1.0', file: 'csrt-versions/2.1.0.user.js' },
+            { version: '2.0.0', name: 'CSRT v2.0.0', author: '110200', description: 'CSRT v2.0.0', file: 'csrt-versions/2.0.0.user.js' },
+            { version: '1.0.0', name: 'CSRT v1.0.0', author: '110200', description: 'CSRT v1.0.0 首个版本', file: 'csrt-versions/1.0.0.user.js' }
+        ]
+    },
+    {
+        id: 'butterany',
+        name: 'z.BridgeOfCracks(butterAny)',
+        author: '会飞的黄油',
+        icon: 'https://m.ccw.site/community/images/avatar-default.png',
+        isSvg: false,
+        description: 'z.BridgeOfCracks是原butterAny 一个CCW 多功能辅助工具，提升创作与游戏体验',
+        versions: [
+          { version: '0.1.9', name: 'BOC安全审计工具 0.1.9', author: '会飞的黄油', description: 'CCW的安全审计工具，检验作品的安全性，作品可通过安装安全扩展拦截', file: 'butterany/z.BridgeOfCracks(butterAny).0.1.9.js' },
+          { version: '0.1.8', name: 'ButterAny 0.1.8', author: '会飞的黄油', description: 'CCW的安全审计工具，检验作品的安全性，作品可通过安装安全扩展拦截', file: 'butterany/butterAny.x.0.1.8.js' },
+          { version: '0.1.7', name: 'ButterAny 0.1.7', author: '会飞的黄油', description: 'CCW的安全审计工具，检验作品的安全性', file: 'butterany/butterAny.vm.0.1.7.js' },
+          { version: '0.1.6', name: 'ButterAny 0.1.6', author: '会飞的黄油', description: 'ButterAny 安全审计工具 - CCW 多功能辅助工具', file: 'butterany/butterAny.vm.0.1.6.js' },
+          { version: '0.1.3', name: 'ButterAny 0.1.3', author: '会飞的黄油', description: 'ButterAny 安全审计工具 - CCW 多功能辅助工具', file: 'butterany/butterAny.vm.0.1.3.js' },
+          { version: '0.1.2', name: 'ButterAny 0.1.2', author: '会飞的黄油', description: 'ButterAny 安全审计工具 - CCW 多功能辅助工具', file: 'butterany/butterAny.vm.0.1.2.js' },
+          { version: '1.0', name: 'ButterAny 1.0', author: '会飞的黄油', description: 'ButterAny 安全审计工具 - CCW 多功能辅助工具', file: 'butterany/butterAny.vm.0.1.1.js' },
+          { version: '1.0', name: 'ButterAny 1.0', author: '会飞的黄油', description: 'ButterAny 安全审计工具 - CCW 多功能辅助工具', file: 'butterany/butterAny.vm.0.1.0.js' },
+          { version: '0.0.8', name: 'ButterAny 0.0.8', author: '会飞的黄油', description: 'ButterAny 安全审计工具 - CCW 多功能辅助工具', file: 'butterany/butterAny.vm.0.0.8.js' },
+          { version: '0.0.7', name: 'ButterAny 0.0.7', author: '会飞的黄油', description: 'ButterAny 安全审计工具 - CCW 多功能辅助工具', file: 'butterany/butterAny.vm.0.0.7.js' },
+          { version: '0.0.6', name: 'ButterAny 0.0.6', author: '会飞的黄油', description: 'ButterAny 安全审计工具 - CCW 多功能辅助工具', file: 'butterany/butterAny.vm.0.0.6.js' },
+          { version: '0.0.5', name: 'ButterAny 0.0.5', author: '会飞的黄油', description: 'ButterAny 安全审计工具 - CCW 多功能辅助工具', file: 'butterany/butterAny.vm.0.0.5.js' },
+          { version: '0.0.4', name: 'ButterAny 0.0.4', author: '会飞的黄油', description: 'ButterAny 安全审计工具 - CCW 多功能辅助工具', file: 'butterany/butterAny.vm.0.0.4.js' },
+          { version: '1.0', name: 'ButterAny 1.0', author: '会飞的黄油', description: 'ButterAny 安全审计工具 - CCW 多功能辅助工具', file: 'butterany/butterAny.vm.0.0.3.js' },
+          { version: '0.0.2', name: 'ButterAny 0.0.2', author: '会飞的黄油', description: 'ButterAny 安全审计工具 - CCW 多功能辅助工具', file: 'butterany/butterAny.vm.0.0.2.js' }
+        ],
+        branches: [
+            { name: '角色信息面板', description: 'CCW 角色信息面板 - 获取 vm，显示并修改所有角色信息，支持导出造型 SVG', file: 'butterany/charcter.js' },
+            { name: '扩展源码提取器', description: 'CCW 扩展源码提取器 - 多策略并行提取 CCW 扩展 URL 和源码', file: 'butterany/extension.js' }
+        ]
+    },
+    {
+        id: 'role-manager',
+        name: '角色管理器',
+        author: '诺言Promise、110200',
+        icon: 'https://i.postimg.cc/28DQ8V5L/RM.png',
+        isSvg: false,
+        description: 'Scratch 角色管理工具系列',
+        versions: [
+            { version: '1.0', name: '角色管理器', author: '诺言Promise、110200', description: '角色管理工具', file: '群文件脚本/角色管理器/角色管理器.js' },
+            { version: '2.0.0', name: '角色管理器Pro', author: '诺言Promise、110200', description: '角色管理工具专业版', file: '群文件脚本/角色管理器/角色管理器pro-2.0.0.js' },
+            { version: '2.1.5', name: '角色管理器Pro', author: '诺言Promise、110200', description: '角色管理工具专业版', file: '群文件脚本/角色管理器/角色管理器pro-2.1.5.js' },
+            { version: '3.2.5', name: '角色管理器ProMax', author: '诺言Promise、110200', description: '角色管理工具增强版', file: '群文件脚本/角色管理器/角色管理器ProMax3.2.5.js' },
+            { version: '3.2.7', name: '角色管理器ProMax', author: '诺言Promise、110200', description: '角色管理工具增强版', file: '群文件脚本/角色管理器/角色管理器ProMax3.2.7.js' },
+            { version: '3.2.8', name: '角色管理器ProMax', author: '诺言Promise、110200', description: '角色管理工具增强版', file: '群文件脚本/角色管理器/角色管理器ProMax3.2.8.js' },
+            { version: '3.3.1', name: '角色管理器ProMax', author: '诺言Promise、110200', description: '角色管理工具增强版', file: '群文件脚本/角色管理器/角色管理器ProMax3.3.1.js' },
+            { version: '3.3.5', name: '角色管理器ProMax', author: '诺言Promise、110200', description: '角色管理工具增强版', file: '群文件脚本/角色管理器/角色管理器ProMax3.3.5.js' },
+            { version: '1.0', name: '角色删除器', author: '诺言Promise、110200', description: '角色删除工具', file: '群文件脚本/角色删除器.js' },
+            { version: '1.0.1', name: '本地存储修改', author: '诺言Promise', description: '修改本地存储内容，支持VM Hook功能', file: '群文件脚本/本地数据修改.js' }
+        ]
+    },
+    {
+        id: 'chen-jin',
+        name: 'Chen-Jin 的脚本库',
+        author: 'Chen-Jin',
+        icon: 'https://www.chen-jin.dpdns.org/Chen-Jin-circle.png',
+        isSvg: false,
+        description: 'Chen-Jin 的 CCW 脚本集合，包含账号管理、美化、工具等多种功能',
+        versions: [
+            { version: '1.0', name: '账号管理器', author: 'Chen-Jin', description: '快捷切换 CCW 账号', file: 'https://us.chen-jin.dpdns.org/accountManager.user.js', isRemote: true },
+            { version: '1.0', name: '允许未知扩展', author: 'Chen-Jin', description: '使带有未知扩展的作品能正常运行、发布', file: 'https://us.chen-jin.dpdns.org/allowUnknownExtensions.user.js', isRemote: true },
+            { version: '1.0', name: '自动签到', author: 'Chen-Jin', description: '无需多点，立即签到', file: 'https://us.chen-jin.dpdns.org/autoCheckIn.user.js', isRemote: true },
+            { version: '1.0', name: 'CCW 美化', author: 'Chen-Jin', description: '[开发中] 美化 CCW UI', file: 'https://us.chen-jin.dpdns.org/beautifyCCW.user.js', isRemote: true },
+            { version: '1.0', name: '拦截 CCW 的个人隐私 API', author: '娅', description: '拦截个人隐私', file: 'https://us.chen-jin.dpdns.org/blockPrivacyApi.user.js', isRemote: true },
+            { version: '1.0', name: 'CCW 评论区自定义图片', author: 'Chen-Jin', description: '自定义评论区图片', file: 'https://us.chen-jin.dpdns.org/ccsci.user.js', isRemote: true },
+            { version: '1.0', name: '修改密码', author: 'Chen-Jin', description: '修改 CCW 密码', file: 'https://us.chen-jin.dpdns.org/changePassword.user.js', isRemote: true },
+            { version: '1.0', name: '显示评论 ID', author: 'Chen-Jin', description: '显示评论 ID', file: 'https://us.chen-jin.dpdns.org/commentId.user.js', isRemote: true },
+            { version: '1.0', name: 'CSS 合集', author: 'Chen-Jin', description: 'CSS 样式合集', file: 'https://us.chen-jin.dpdns.org/cssSet.user.js', isRemote: true },
+            { version: '1.0', name: '函数备份', author: 'Chen-Jin', description: '函数备份工具', file: 'https://us.chen-jin.dpdns.org/funcBackup.user.js', isRemote: true },
+            { version: '1.0', name: '获取 OSS', author: 'Chen-Jin', description: '获取 OSS 凭证', file: 'https://us.chen-jin.dpdns.org/getOSS.user.js', isRemote: true },
+            { version: '1.0', name: '获取 Runtime & VM', author: 'Chen-Jin', description: '获取 Runtime 和 VM 对象', file: 'https://us.chen-jin.dpdns.org/getRV.user.js', isRemote: true },
+            { version: '1.0', name: '获取 Runtime & VM Plus', author: 'Chen-Jin', description: '获取 Runtime 和 VM 对象（增强版）', file: 'https://us.chen-jin.dpdns.org/getRVPlus.user.js', isRemote: true },
+            { version: '1.0', name: '摘帽', author: 'Chen-Jin', description: '摘帽工具', file: 'https://us.chen-jin.dpdns.org/hatsBreaker.user.js', isRemote: true },
+            { version: '1.0', name: '主页查看器', author: 'Chen-Jin', description: '主页查看器', file: 'https://us.chen-jin.dpdns.org/homeViewer.user.js', isRemote: true },
+            { version: '1.0', name: '自动通过拼图验证', author: 'Chen-Jin', description: '自动通过拼图验证', file: 'https://us.chen-jin.dpdns.org/passPuzzleCheck.user.js', isRemote: true },
+            { version: '1.0', name: '快捷回复', author: 'Chen-Jin', description: '快捷回复工具', file: 'https://us.chen-jin.dpdns.org/reply.user.js', isRemote: true },
+            { version: '1.0', name: '修改 CCW API', author: 'Chen-Jin', description: '修改 CCW API', file: 'https://us.chen-jin.dpdns.org/setCCWAPI.user.js', isRemote: true },
+            { version: '1.0', name: '显示关注动态', author: 'Chen-Jin', description: '显示关注动态', file: 'https://us.chen-jin.dpdns.org/showFollowingFeed.user.js', isRemote: true },
+            { version: '1.0', name: '反 CCW CSP', author: 'Chen-Jin', description: '反 CCW CSP', file: 'https://us.chen-jin.dpdns.org/unccwcsp.user.js', isRemote: true },
+            { version: '1.0', name: '隐藏警告', author: 'Chen-Jin', description: '隐藏警告（已合并）', file: 'https://us.chen-jin.dpdns.org/hideWarn.user.js', isRemote: true },
+            { version: '1.0', name: '恢复登录', author: 'Chen-Jin', description: '恢复登录（已合并）', file: 'https://us.chen-jin.dpdns.org/loginAgain.user.js', isRemote: true },
+            { version: '1.0', name: '防误删扩展', author: 'Chen-Jin', description: '防误删扩展（已合并）', file: 'https://us.chen-jin.dpdns.org/preventExtensionDelete.user.js', isRemote: true },
+            { version: '1.0', name: '显示暂停', author: 'Chen-Jin', description: '显示暂停（已合并）', file: 'https://us.chen-jin.dpdns.org/showPause.user.js', isRemote: true },
+            { version: '1.0', name: '智能个签', author: 'Chen-Jin', description: '智能个签（已合并）', file: 'https://us.chen-jin.dpdns.org/smartBio.user.js', isRemote: true },
+            { version: '1.0', name: '计时器报废器', author: 'Chen-Jin', description: '计时器报废器（已合并）', file: 'https://us.chen-jin.dpdns.org/timerBreaker.user.js', isRemote: true }
+        ]
+    },
+    {
+        id: 'Online-Toolbox',
+        name: 'Online Toolbox',
+        author: '110200',
+        icon: 'https://m.ccw.site/community/images/logo-ccw.png',
+        isSvg: false,
+        description: '更好的MMO联机',
+        versions: [
+            { version: '3.4.1', name: 'Online Toolbox', author: '110200', description: '更好的MMO', file: 'User-Script/files/Online Toolbox-3.4.1.user.js' }
+        ]
+    },
+    {
+        id: 'Disguise',
+        name: '伪装工具箱',
+        author: '不想上学,110200',
+        icon: 'https://m.ccw.site/community/images/logo-ccw.png',
+        isSvg: false,
+        description: '在 CCW 伪装手机号 伪装身份',
+        versions: [
+            { version: '1.0', name: 'ccw伪装身份', author: '不想上学', description: '在ccw使用别人的身份运行作品，不具备盗号功能', file: 'User-Script/files/ccw伪装身份.user.js' },
+            { version: '2.4.4', name: 'ccw伪装身份pro', author: '110200', description: '更加真实的伪装身份 伪装作品数据、用户主页、时间戳、创作者中心，支持多身份管理与主页快速伪装', file: 'User-Script/files/ccw伪装身份pro-2.4.4.user.js' },
+            { version: '1.0.5', name: 'ccw切换身份', author: '不想上学', description: '在ccw使用别人的身份运行作品，不具备盗号功能', file: '群文件脚本/ccw切换身份.user.js' },
+            { version: '2.0.1', name: 'ccw伪装手机号2.0.1', author: '不想上学', description: '在ccw伪装手机号，伪装认证状态，伪装信誉，伪装QQ……', file: 'User-Script/files/ccw伪装手机号2.0.1.user.js' },
+            { version: '1.0', name: 'ccw伪装手机号', author: '不想上学', description: '在ccw伪装手机号，建议使用新版', file: 'User-Script/files/ccw伪装手机号.user.js' },
+            { version: '1.0.1', name: '登录信息修改器', author: '不想上学', description: '在ccw登录时修改设备和浏览器', file: '群文件脚本/ccw修改登录信息.user.js' },
+        ]
+    },
+    {
+        id: 'project-replacer',
+        name: '作品替换器',
+        author: '不想上学',
+        icon: 'https://m.ccw.site/community/images/logo-ccw.png',
+        isSvg: false,
+        description: '访问别人作品时替换作品源码，替换后的作品不会上传，只对自己有效',
+        versions: [
+            { version: '2.0.1', name: '作品替换器 2.0.1', author: '不想上学', description: '在访问作品页和编辑器时替换作品源码，支持大文件分块存储', file: '群文件脚本/作品替换器+作品回溯.js' },
+            { version: '1.0.4', name: '作品替换器', author: '不想上学', description: '访问别人作品时替换作品源码，理论上能绕过任何前端限制，可以搭配连接社区增强版改编的闭源作品、屏蔽计时器、CSense极速版一起使用', file: 'User-Script/files/ccw作品替换器.user.js' },
+            { version: '1.0.1', name: '作品替换器 1.0.1', author: '不想上学', description: '旧版作品替换器', file: 'User-Script/files/作品替换器.min.user.js' },
+            { version: '1.0.4-min', name: '作品替换器(min)', author: '不想上学', description: '作品替换器压缩版', file: 'User-Script/files/作品替换器.min.user.js' }
+        ]
+    },
+    {
+        id: 'project-downloader',
+        name: '盗作神器',
+        author: '不想上学、ZeroInk、博士',
+        icon: 'https://m.ccw.site/community/images/logo-ccw.png',
+        isSvg: false,
+        description: '一个可以在任何社区保存作品的工具',
+        versions: [
+            { version: '1.4.4', name: '盗作神器 Pro 1.4.4', author: '不想上学、ZeroInk、博士', description: '盗作神器 Pro 最新版', file: '群文件脚本/盗作神器Pro.js' },
+            { version: '1.4.3', name: '盗作神器 Pro 1.4.3', author: '不想上学、ZeroInk、博士', description: '盗作神器 Pro', file: '盗作神器 Pro.js' }
+        ]
+    },
+    {
+        id: 'variable-modifier',
+        name: '变量修改器',
+        author: '110200',
+        icon: 'https://m.ccw.site/community/images/logo-ccw.png',
+        isSvg: false,
+        description: '在 Scratch 中可视化修改角色变量并支持锁定',
+        versions: [
+            { version: '2.0', name: 'Variable Modifier 2.0', author: '110200', description: '修改变量，仅仅只是Scratch VM，支持锁定功能', file: '群文件脚本/Variable Modifier.js' },
+            { version: '1.0', name: '变量修改器', author: '110200', description: '在 Scratch 中可视化修改角色变量并支持锁定', file: 'User-Script/files/变量修改器.user.js' }
+        ]
+    },
+    {
+        id: 'game-assist',
+        name: '联机枪战辅助工具',
+        author: '073、0070',
+        icon: 'https://m.ccw.site/community/images/logo-ccw.png',
+        isSvg: false,
+        description: '联机枪战游戏辅助工具集合',
+        versions: [
+            { version: '1.0', name: 'QS Cheater Pro', author: 'ANON073', description: 'QS联机枪战作弊工具', file: 'QS Cheater Pro.js' },
+            { version: '1.0', name: 'MMO腐竹', author: '0070', description: 'vm太好用了你知道吗', file: 'User-Script/files/MMO腐竹.user.js' },
+            { version: '1.0', name: '联机枪战2辅助脚本', author: '未登录用户', description: '疑似辅助脚本', file: 'User-Script/files/联机枪战2辅助脚本.user.js' }
+        ]
+    },
+    {
+        id: 'ccw-tools',
+        name: 'CCW工具集',
+        author: '110200',
+        icon: 'https://m.ccw.site/community/images/logo-ccw.png',
+        isSvg: false,
+        description: 'CCW社区实用工具集合',
+        versions: [
+            { version: '1.0.3', name: '显示ccwdata隐藏积木', author: '不想上学', description: '显示ccwdata扩展里的隐藏积木', file: '群文件脚本/显示ccwdata隐藏积木.js' },
+            { version: '1.0.0', name: '破解未登录游玩', author: '不想上学', description: '允许在ccw不登录运行作品', file: '群文件脚本/破解未登录游玩.user.js' },
+            { version: '1.0.0', name: '获取oss', author: 'chen-jie', description: '获取ccw oss', file: '群文件脚本/获取oss.user.js' }
+        ]
+    },
+    {
+        id: 'security-tools',
+        name: '安全工具',
+        author: '110200、不想上学、Маскировка、こんにちは🔷(病毒小鬼)',
+        icon: 'https://m.ccw.site/community/images/logo-ccw.png',
+        isSvg: false,
+        description: '开发和调试工具集合 安全研究和渗透测试工具集合',
+        versions: [
+            { version: '1.0', name: 'VerveSync Kit', author: '', description: 'Verve同步工具包', file: 'VerveSync Kit.js' },
+            { version: '1.0', name: 'VerveSync Kit (User)', author: '', description: 'What is safety?', file: 'User-Script/files/VerveSync Kit.user.js' },
+            { version: '1.0', name: '飞书拦截器', author: '您', description: '飞书消息拦截工具', file: '群文件脚本/飞书拦截器.js' },
+            { version: '1.0', name: '广播触发器', author: '诺言Promise', description: '广播消息触发工具', file: '群文件脚本/广播触发器.js' },
+            { version: '1.0', name: '文件上传工具-整合OSS', author: '110200', description: '文件上传工具，整合OSS 可把文件上传至m.ccw.site', file: '群文件脚本/文件上传工具-整合OSS.js' },
+            { version: '1.0', name: 'Cookie 全量导出器', author: 'Маскировка', description: '导出浏览器全部 Cookie 为 JSON 文件', file: '群文件脚本/cookie.js' },
+            { version: '1.0', name: '无视黑名单', author: '不想上学', description: '绕过黑名单限制工具', file: 'User-Script/files/无视黑名单.user.js' },
+            { version: '1.0', name: '暴力破解汉化版', author: 'こんにちは🔷(病毒小鬼)', description: 'Visual password brute force tool with real-time monitoring', file: 'User-Script/files/暴力破解汉化版.user.js' },
+            { version: '2.5', name: 'Tsense v2.5', author: '林子诺的AI、不想上学', description: '低级渗透靶场工具包', file: '群文件脚本/tsense2.5 解密.js' }
+        ]
+    },
+    {
+        id: 'project-edit',
+        name: '作品编辑工具',
+        author: '不想上学 110200 诺言Promise 会飞的黄油',
+        icon: 'https://m.ccw.site/community/images/logo-ccw.png',
+        isSvg: false,
+        description: '作品编辑和修改工具集合',
+        versions: [
+            { version: '1.0', name: '角色插入器', author: '不想上学', description: '访问别人作品时向作品里插入角色，只对自己有效', file: '群文件脚本/角色插入器.min.user.js' },
+            { version: '1.0', name: '扩展报废器', author: '不想上学', description: '报废扩展工具', file: 'User-Script/files/扩展报废器.user.js' },
+            { version: '1.0', name: '屏蔽协作记录', author: '不想上学', description: '让协作成员看不到你的协作记录', file: 'User-Script/files/屏蔽协作记录.user.js' },
+            { version: '0.3.0', name: '便捷编辑器 iframe 0.3.0', author: '诺言Promise 110200', description: '在ccw作品页捕获作品再飞入gandi进行内嵌编辑后再飞回去', file: 'User-Script/files/便捷编辑器 iframe-0.3.0.js' },
+            { version: '2.2.0', name: '积木编辑器Pro 2.2.0', author: '会飞的黄油、诺言Promise', description: '可禁用/启用/删除单块或整条脚本，实时显示并修改有返回值积木的取值，并直接运行', file: 'User-Script/files/积木编辑器Pro.js' },
+            { version: '0.1.5', name: '便捷编辑器 0.1.5', author: '诺言Promise', description: '在ccw播放器页面捕获作品并传入gandi进行编辑后再一键替换回去，把你的外挂扔到外太空！！！！！', file: 'User-Script/files/便捷编辑器0.1.5.js' }
+        ]
+    },
+    {
+        id: 'Other-security-tools',
+        name: '其他安全审计工具',
+        author: '作者太多 无法例举',
+        icon: 'https://m.ccw.site/community/images/logo-ccw.png',
+        isSvg: false,
+        description: '其他综合审计工具合集 类CSense',
+        versions: [
+          { id: 'AXON', name: 'AXON', author: '范思成', version: '3.5.0', description: '开发者向悬浮球（分区UI） + 工具/飞书机器人推送/系统/插件系统', file: '群文件脚本/AXON.js' },
+          { id: 'OJenje', name: 'OJenje', author: '𝓚𝓸𝓸𝓴𝔂𝓒蓝羽', version: '0.1.0', description: '一个 CCW 安全审计工具', file: 'User-Script/files/OJenje.js' },
+          { id: 'CSRT Web Panel', name: 'CSRT Web Panel', author: '110200', version: 'Panel', description: 'CSRT特别版', file: 'User-Script/files/CSRT Web Panel-Panel.js' },
+          { id: 'smesm666', name: 'smesm666', author: 'smesm666', version: '2.0.0', description: '角色/变量/消息/扩展/下载/水印/主题/背景/CSS/拖拽', file: 'User-Script/files/smesm.js' },
+        ]
+    },
+    {
+        id: 'Other-tools',
+        name: '其他审计工具',
+        author: '作者太多 无法例举',
+        icon: 'https://m.ccw.site/community/images/logo-ccw.png',
+        isSvg: false,
+        description: '其他非综合审计工具合集 类MG2辅助脚本',
+        versions: [
+          { id: '拾荒控制面板', name: '拾荒控制面板', author: '蓝天zip', version: '1.1.0', description: '拾荒者专用变量控制面板', file: '群文件脚本/拾荒者控制面板.js' }
+        ]
+    }
+];
+
+const scripts = [
+    { id: 'gandigetadmin', name: 'Gandi Get Admin Link', author: 'ahd', version: '2.0', description: '获取CCW协作作品链接，目前处于测试阶段', file: '群文件脚本/gandigetadmin.js' },
+    { id: 'csdetectkiller', name: 'CSDetect Killer', author: 'ANON073', version: '1.0', description: '反CS检测工具，目前处于测试阶段，会在两个页面之间反复横跳，等到CCW作出提示是否留在页面，就可以使用csence。', file: '群文件脚本/csdetect killer.js' },
+    { id: 'vmhook', name: 'VM Hook', author: '', version: '1.0', description: '虚拟机钩子工具', file: 'vmhook.js' },
+    { id: 'scratch-downloader', name: 'scratch-project-downloader', author: '不想上学', version: '1.0', description: 'scratch作品下载器', file: '群文件脚本/scratch-project-downloader.min.user.js' },
+    { id: 'local-data-modifier', name: '本地存储修改', author: '诺言Promise', version: '1.0.1', description: '修改本地存储内容，支持VM Hook功能', file: '群文件脚本/本地数据修改.js' },
+    { id: 'modify-extension-response', name: '修改社区扩展返回值', author: '110200', version: '1.0.4', description: '修改社区扩展返回值', file: '群文件脚本/修改社区扩展返回值.js', icon: 'https://zhishi.oss-cn-beijing.aliyuncs.com/user_projects_assets/a6edfa0f6b8dda2fc126d847989c94ba.svg' },
+    { id: 'CCW-CSP', name: '反 CCW CSP (加固)', author: '110200', version: '1.1.0', file: '群文件脚本/反 CCW CSP（加固版）-1.1.0.js' },
+    { id: 'GandiLocker 解药-1.0', name: 'GandiLocker 解药', author: '110200', version: '1.0', description: '用于解救老版本的GandiLocker', file: '群文件脚本/GandiLocker 解药-1.0.js' }
+];
+
+let currentProject = null;
+
+function esc(str) {
+    return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+}
+
+function makeVersionId(project, ver, index) {
+    return `${project.id}-v${index}-${String(ver.version).replace(/[^a-zA-Z0-9]/g, '_')}`;
+}
+
+function buildIconHtml(item) {
+    if (!item.icon) return '';
+    if (item.isSvg) {
+        return `<div class="project-icon-svg" aria-hidden="true">${item.icon}</div>`;
+    }
+    return `<img src="${esc(item.icon)}" class="project-icon" alt="">`;
+}
+
+function showProjectList() {
+    document.getElementById('projectList').classList.remove('hidden');
+    document.getElementById('projectDetail').classList.add('hidden');
+    currentProject = null;
+}
+
+function buildTabs(versionId) {
+    return `
+        <div class="tabs" role="tablist">
+            <button class="tab-btn active" role="tab" aria-selected="true" data-tab="link-${versionId}">copy link</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="install-${versionId}">install</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="copy-${versionId}">copy source</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="view-${versionId}">view source</button>
+        </div>
+    `;
+}
+
+function buildTabPanels(versionId, file) {
+    return `
+        <div class="tab-content active" id="link-${versionId}" role="tabpanel">
+            <button class="copy-btn" data-link="${esc(file)}">copy install link</button>
+            <span class="copy-status" aria-live="polite"></span>
+        </div>
+        <div class="tab-content" id="install-${versionId}" role="tabpanel">
+            <button class="copy-btn" data-link="${esc(file)}">install script</button>
+            <span class="copy-status" aria-live="polite"></span>
+        </div>
+        <div class="tab-content" id="copy-${versionId}" role="tabpanel">
+            <button class="copy-btn" data-source-id="${versionId}">copy source code</button>
+            <span class="copy-status" aria-live="polite"></span>
+        </div>
+        <div class="tab-content" id="view-${versionId}" role="tabpanel">
+            <div class="code-block" id="code-${versionId}" tabindex="0">loading...</div>
+        </div>
+    `;
+}
+
+function showProjectDetail(projectId) {
+    const project = projects.find(p => p.id === projectId);
+    if (!project) return;
+    currentProject = project;
+
+    document.getElementById('projectList').classList.add('hidden');
+    document.getElementById('projectDetail').classList.remove('hidden');
+
+    const isCsrt = project.id === 'csrt';
+    const headerCardClass = isCsrt ? 'card clickable' : 'card';
+    const headerCardTabIndex = isCsrt ? '0' : '';
+    const headerCardRole = isCsrt ? 'button' : '';
+    const headerCardAriaLabel = isCsrt ? `open CSRT website` : '';
+
+    const headerHtml = `
+        <div class="${headerCardClass}" id="project-header-card" tabindex="${headerCardTabIndex}" role="${headerCardRole}" aria-label="${headerCardAriaLabel}">
+            <div class="card-header">
+                <div class="project-name-row">
+                    ${buildIconHtml(project)}
+                    <div>
+                        <div class="card-name">${esc(project.name)}</div>
+                        <div class="card-meta">
+                            <span>author: ${esc(project.author) || 'unknown'}</span>
+                            <span>versions: ${project.versions.length}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-desc">${esc(project.description)}</div>
+        </div>
+    `;
+    document.getElementById('project-header').innerHTML = headerHtml;
+
+    if (isCsrt) {
+        const headerCard = document.getElementById('project-header-card');
+        if (headerCard) {
+            headerCard.addEventListener('click', () => {
+                window.open('https://csrt.netlify.app/', '_blank');
+            });
+            headerCard.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    window.open('https://csrt.netlify.app/', '_blank');
+                }
+            });
+        }
+    }
+
+    const versionsContainer = document.getElementById('versions-container');
+    versionsContainer.innerHTML = '';
+
+    project.versions.forEach((ver, index) => {
+        const versionId = makeVersionId(project, ver, index);
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.id = `card-${versionId}`;
+        card.innerHTML = `
+            <span class="version-badge">v${esc(ver.version)}</span>
+            <div class="card-header">
+                <div>
+                    <div class="card-name">${esc(ver.name)}</div>
+                    <div class="card-meta">
+                        <span>author: ${esc(ver.author || project.author) || 'unknown'}</span>
+                        <span>version: ${esc(ver.version)}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-desc">${esc(ver.description)}</div>
+            ${buildTabs(versionId)}
+            ${buildTabPanels(versionId, ver.file)}
+        `;
+        versionsContainer.appendChild(card);
+    });
+
+    project.versions.forEach(async (ver, index) => {
+        const versionId = makeVersionId(project, ver, index);
+        const codeBlock = document.getElementById(`code-${versionId}`);
+        if (!codeBlock) return;
+        const source = await loadVersionSource(ver);
+        codeBlock.textContent = source;
+    });
+
+    if (project.branches && project.branches.length > 0) {
+        const branchesDivider = document.createElement('div');
+        branchesDivider.className = 'branch-divider';
+        branchesDivider.innerHTML = '<span>分支模块</span>';
+        versionsContainer.appendChild(branchesDivider);
+
+        project.branches.forEach((branch, index) => {
+            const branchId = `${project.id}-branch-${index}`;
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.id = `card-${branchId}`;
+            card.innerHTML = `
+                <span class="version-badge">branch</span>
+                <div class="card-header">
+                    <div>
+                        <div class="card-name">${esc(branch.name)}</div>
+                        <div class="card-meta">
+                            <span>author: ${esc(project.author) || 'unknown'}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-desc">${esc(branch.description)}</div>
+                ${buildTabs(branchId)}
+                ${buildTabPanels(branchId, branch.file)}
+            `;
+            versionsContainer.appendChild(card);
+        });
+
+        project.branches.forEach(async (branch, index) => {
+            const branchId = `${project.id}-branch-${index}`;
+            const codeBlock = document.getElementById(`code-${branchId}`);
+            if (!codeBlock) return;
+            const source = await loadVersionSource(branch);
+            codeBlock.textContent = source;
+        });
+    }
+}
+
+async function loadVersionSource(ver) {
+    try {
+        const response = await fetch(ver.file);
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        return await response.text();
+    } catch (e) {
+        return '// Source code preview unavailable. Please use "copy link" to install the script.';
+    }
+}
+
+function createProjectCard(project) {
+    const card = document.createElement('div');
+    card.className = 'card clickable';
+    card.id = `card-${project.id}`;
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', `open project ${project.name}`);
+    card.innerHTML = `
+        <div class="card-header">
+            <div class="project-name-row">
+                ${buildIconHtml(project)}
+                <div>
+                    <div class="card-name">${esc(project.name)}</div>
+                    <div class="card-meta">
+                        <span>author: ${esc(project.author) || 'unknown'}</span>
+                        <span>versions: ${project.versions.length}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-desc">${esc(project.description)}</div>
+    `;
+    card.addEventListener('click', () => showProjectDetail(project.id));
+    card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            showProjectDetail(project.id);
+        }
+    });
+    return card;
+}
+
+function createScriptCard(script) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = `card-${script.id}`;
+    const versionId = script.id;
+    card.innerHTML = `
+        <div class="card-header">
+            <div class="project-name-row">
+                ${script.icon ? `<img src="${esc(script.icon)}" class="project-icon" alt="">` : ''}
+                <div>
+                    <div class="card-name">${esc(script.name)}</div>
+                    <div class="card-meta">
+                        <span>author: ${esc(script.author) || 'unknown'}</span>
+                        <span>version: ${esc(script.version)}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-desc">${esc(script.description)}</div>
+        <div class="tabs" role="tablist">
+            <button class="tab-btn active" role="tab" aria-selected="true" data-tab="link-${versionId}">copy link</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="copy-${versionId}">copy source</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="view-${versionId}">view source</button>
+        </div>
+        <div class="tab-content active" id="link-${versionId}" role="tabpanel">
+            <button class="copy-btn" data-link="${esc(script.file)}">copy install link</button>
+            <span class="copy-status" aria-live="polite"></span>
+        </div>
+        <div class="tab-content" id="copy-${versionId}" role="tabpanel">
+            <button class="copy-btn" data-source-id="${versionId}">copy source code</button>
+            <span class="copy-status" aria-live="polite"></span>
+        </div>
+        <div class="tab-content" id="view-${versionId}" role="tabpanel">
+            <div class="code-block" id="code-${versionId}" tabindex="0">loading...</div>
+        </div>
+    `;
+    return card;
+}
+
+function getAllScripts() {
+    const allScripts = [];
+    for (const project of projects) {
+        for (const ver of project.versions) {
+            allScripts.push({
+                id: `${project.id}-${ver.version}-${ver.name}`,
+                name: ver.name || project.name,
+                author: ver.author || project.author,
+                version: ver.version,
+                file: ver.file,
+                project: project.name
+            });
+        }
+    }
+    for (const script of scripts) {
+        allScripts.push({
+            id: script.id,
+            name: script.name,
+            author: script.author,
+            version: script.version,
+            file: script.file,
+            project: '独立脚本'
+        });
+    }
+    return allScripts;
+}
+
+let batchInstallInitialized = false;
+function initBatchInstall() {
+    if (batchInstallInitialized) return;
+    batchInstallInitialized = true;
+
+    const modal = document.getElementById('batchModal');
+    const batchList = document.getElementById('batchList');
+    const batchCount = document.getElementById('batchCount');
+    const selectedScripts = new Set();
+    const allScripts = getAllScripts();
+
+    function openModal() {
+        modal.classList.remove('hidden');
+        renderBatchList();
+    }
+    function closeModal() {
+        modal.classList.add('hidden');
+    }
+    document.getElementById('batchInstallBtn').addEventListener('click', openModal);
+    document.getElementById('batchCloseBtn').addEventListener('click', closeModal);
+    document.getElementById('batchCancelBtn').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+    });
+
+    function renderBatchList() {
+        batchList.innerHTML = '';
+        allScripts.forEach((s, i) => {
+            const item = document.createElement('div');
+            item.className = 'batch-item';
+            const cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.id = `batch-cb-${i}`;
+            cb.checked = selectedScripts.has(s.id);
+            cb.addEventListener('change', () => {
+                if (cb.checked) selectedScripts.add(s.id);
+                else selectedScripts.delete(s.id);
+                updateCount();
+            });
+            const label = document.createElement('label');
+            label.htmlFor = `batch-cb-${i}`;
+            label.innerHTML = `<span class="batch-project">[${esc(s.project)}]</span> ${esc(s.name)} <span class="batch-meta">v${esc(s.version)} &middot; ${esc(s.author) || 'unknown'}</span>`;
+            item.appendChild(cb);
+            item.appendChild(label);
+            batchList.appendChild(item);
+        });
+        updateCount();
+    }
+
+    function updateCount() {
+        batchCount.textContent = `已选 ${selectedScripts.size} 个`;
+    }
+
+    document.getElementById('batchSelectAll').addEventListener('click', () => {
+        allScripts.forEach(s => selectedScripts.add(s.id));
+        renderBatchList();
+    });
+    document.getElementById('batchDeselectAll').addEventListener('click', () => {
+        selectedScripts.clear();
+        renderBatchList();
+    });
+
+    document.getElementById('batchConfirmBtn').addEventListener('click', () => {
+        if (selectedScripts.size === 0) return;
+        const selected = allScripts.filter(s => selectedScripts.has(s.id));
+        const baseUrl = 'https://110200-tools.netlify.app/';
+        selected.forEach((s, i) => {
+            setTimeout(() => {
+                window.open(baseUrl + s.file, '_blank');
+            }, i * 500);
+        });
+        closeModal();
+    });
+}
+
+async function init() {
+    const container = document.getElementById('scripts-container');
+
+    document.addEventListener('click', (e) => {
+        const tabBtn = e.target.closest('.tab-btn');
+        if (tabBtn) {
+            const tabId = tabBtn.dataset.tab;
+            const card = tabBtn.closest('.card');
+            if (!card) return;
+            card.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-selected', 'false');
+            });
+            card.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            tabBtn.classList.add('active');
+            tabBtn.setAttribute('aria-selected', 'true');
+            const panel = document.getElementById(tabId);
+            if (panel) panel.classList.add('active');
+            return;
+        }
+
+        const copyBtn = e.target.closest('.copy-btn');
+        if (!copyBtn) return;
+
+        const sourceId = copyBtn.dataset.sourceId;
+        const link = copyBtn.dataset.link;
+        const parentTab = copyBtn.closest('.tab-content');
+        const isInstallTab = parentTab && parentTab.id.startsWith('install-');
+        const status = copyBtn.nextElementSibling;
+
+        if (isInstallTab && link) {
+            const fullUrl = `https://110200-tools.netlify.app/${link}`;
+            window.open(fullUrl, '_blank');
+            if (status) {
+                status.textContent = 'opening install page...';
+                setTimeout(() => { status.textContent = ''; }, 2000);
+            }
+            return;
+        }
+
+        if (link) {
+            const fullUrl = `https://110200-tools.netlify.app/${link}`;
+            navigator.clipboard.writeText(fullUrl).then(() => {
+                copyBtn.classList.add('copied');
+                copyBtn.textContent = 'copied!';
+                if (status) {
+                    status.textContent = 'install link copied to clipboard';
+                    setTimeout(() => {
+                        status.textContent = '';
+                        copyBtn.classList.remove('copied');
+                        copyBtn.textContent = 'copy install link';
+                    }, 2000);
+                }
+            });
+            return;
+        }
+
+        if (sourceId) {
+            const codeBlock = document.getElementById(`code-${sourceId}`);
+            const source = codeBlock ? codeBlock.textContent : '';
+            navigator.clipboard.writeText(source).then(() => {
+                copyBtn.classList.add('copied');
+                copyBtn.textContent = 'copied!';
+                if (status) {
+                    status.textContent = 'source code copied to clipboard';
+                    setTimeout(() => {
+                        status.textContent = '';
+                        copyBtn.classList.remove('copied');
+                        copyBtn.textContent = 'copy source code';
+                    }, 2000);
+                }
+            });
+        }
+    });
+
+    for (const project of projects) {
+        container.appendChild(createProjectCard(project));
+    }
+
+    for (const script of scripts) {
+        container.appendChild(createScriptCard(script));
+        const source = await loadVersionSource(script);
+        const codeBlock = document.getElementById(`code-${script.id}`);
+        if (codeBlock) codeBlock.textContent = source;
+    }
+
+    initBatchInstall();
+}
+
+init();
+</script>
+</body>
+</html>
